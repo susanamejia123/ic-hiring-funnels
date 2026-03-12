@@ -7,22 +7,26 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F3FF; min-height: 100vh; }
-nav { background: #7C3AED; padding: 0 32px; display: flex; align-items: center; gap: 0; }
+nav { background: #7C3AED; padding: 0 32px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
 .nav-brand { color: white; font-weight: 800; font-size: 16px; padding: 18px 24px 18px 0; border-right: 1px solid rgba(255,255,255,0.2); margin-right: 16px; }
-.nav-tab { color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; padding: 18px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; }
+.nav-tab { color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; padding: 18px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; position: relative; }
 .nav-tab:hover { color: white; }
 .nav-tab.active { color: white; border-bottom: 3px solid white; }
+.alert-badge { background: #EF4444; color: white; border-radius: 10px; font-size: 10px; font-weight: 800; padding: 1px 6px; position: absolute; top: 10px; right: 4px; }
 .page { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
 .page.active { display: block; }
 h2 { color: #7C3AED; font-size: 20px; margin-bottom: 4px; }
 .subtitle { color: #6B7280; font-size: 13px; margin-bottom: 24px; }
+.section-title { font-size: 15px; font-weight: 700; color: #7C3AED; margin: 24px 0 12px; }
 
-/* Funnel page */
+/* Pipeline tabs */
 .pipeline-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
 .ptab { padding: 7px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: #EDE9FE; color: #7C3AED; transition: all 0.15s; }
 .ptab.active { background: #7C3AED; color: white; }
 .ptab.warn { outline: 2px solid #DC2626; }
 .ptab:hover:not(.active) { background: #DDD6FE; }
+
+/* Cards */
 .cards { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
 .card { border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 150px; }
 .card-purple { background: #7C3AED; color: white; }
@@ -31,8 +35,8 @@ h2 { color: #7C3AED; font-size: 20px; margin-bottom: 4px; }
 .card-label { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
 .card-number { font-size: 30px; font-weight: 800; line-height: 1; }
 .card-sub { font-size: 11px; opacity: 0.85; margin-top: 4px; }
-.bottleneck-bar { background: #FEF9C3; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; }
-.warning-banner { background: #FEE2E2; border: 1px solid #DC2626; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; color: #DC2626; }
+
+/* Tables */
 table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
 thead tr { background: #7C3AED; color: white; }
 th { padding: 11px 14px; text-align: left; font-weight: 600; }
@@ -48,18 +52,21 @@ tr.hire-row { background: #EDE9FE; }
 .td-count { font-weight: 600; color: #111827; }
 .stage-bad { color: #C2410C; font-weight: 700; }
 .stage-hire { color: #7C3AED; font-weight: 700; }
-.ref-tag { color: #9CA3AF; font-size: 11px; margin-left: 6px; }
 .notes { font-size: 12px; color: #9CA3AF; line-height: 1.8; }
 .notes div::before { content: "* "; }
 .panel { display: none; }
 .panel.active { display: block; }
+.bottleneck-bar { background: #FEF9C3; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; }
+.warning-banner { background: #FEE2E2; border: 1px solid #DC2626; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; color: #DC2626; }
 
-/* Sourcing Plan */
-.section-title { font-size: 15px; font-weight: 700; color: #7C3AED; margin: 24px 0 12px; }
-.priority-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px; }
-.p1 { background: #FEE2E2; color: #DC2626; }
-.p2 { background: #FEF9C3; color: #92400E; }
-.p3 { background: #D1FAE5; color: #065F46; }
+/* Sourcing */
+.sourcing-total-bar { background: #7C3AED; color: white; border-radius: 12px; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.sourcing-total-bar .big { font-size: 36px; font-weight: 800; }
+.sourcing-total-bar .label { font-size: 13px; opacity: 0.85; }
+.sourcing-breakdown { display: flex; gap: 20px; flex-wrap: wrap; }
+.sourcing-breakdown div { text-align: center; }
+.sourcing-breakdown .num { font-size: 20px; font-weight: 800; }
+.sourcing-breakdown .lbl { font-size: 11px; opacity: 0.75; }
 .sourcing-card { background: white; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 .sourcing-info h4 { font-size: 15px; color: #111827; margin-bottom: 4px; }
 .sourcing-info p { font-size: 12px; color: #6B7280; }
@@ -69,24 +76,42 @@ tr.hire-row { background: #EDE9FE; }
 .s-metric-label { font-size: 11px; color: #6B7280; }
 .channel-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .channel-tag { background: #EDE9FE; color: #7C3AED; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.priority-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px; }
+.p1 { background: #FEE2E2; color: #DC2626; }
+.p2 { background: #FEF9C3; color: #92400E; }
+.p3 { background: #D1FAE5; color: #065F46; }
 
-/* Metrics */
-.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.metric-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-.metric-card h4 { font-size: 12px; color: #6B7280; margin-bottom: 8px; }
-.metric-value { font-size: 28px; font-weight: 800; color: #7C3AED; }
-.metric-sub { font-size: 11px; color: #9CA3AF; margin-top: 4px; }
-.tracking-table { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 24px; }
-.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-.dot-green { background: #10B981; }
-.dot-yellow { background: #F59E0B; }
-.dot-red { background: #EF4444; }
+/* Open positions */
+.pos-card { background: white; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-left: 4px solid #7C3AED; }
+.pos-card.high { border-left-color: #EF4444; }
+.pos-card.medium { border-left-color: #F59E0B; }
+.pos-card.monitor { border-left-color: #10B981; }
+.pos-title { font-size: 14px; font-weight: 700; color: #111827; }
+.pos-meta { font-size: 12px; color: #6B7280; margin-top: 2px; }
+.pos-days { font-size: 22px; font-weight: 800; color: #7C3AED; }
+.pos-days-label { font-size: 11px; color: #6B7280; }
 
-/* Loading */
-.loading { text-align: center; padding: 40px; color: #9CA3AF; font-size: 14px; }
-.last-updated { font-size: 11px; color: #9CA3AF; text-align: right; margin-bottom: 16px; }
+/* Alerts */
+.alert-card { border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
+.alert-critical { background: #FEE2E2; border: 1px solid #FECACA; }
+.alert-warning { background: #FEF9C3; border: 1px solid #FDE68A; }
+.alert-ok { background: #D1FAE5; border: 1px solid #A7F3D0; }
+.alert-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.alert-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.alert-critical .alert-title { color: #DC2626; }
+.alert-warning .alert-title { color: #92400E; }
+.alert-ok .alert-title { color: #065F46; }
+.alert-body { font-size: 13px; color: #374151; }
+.alert-action { font-size: 12px; font-weight: 600; margin-top: 6px; }
+.alert-critical .alert-action { color: #DC2626; }
+.alert-warning .alert-action { color: #92400E; }
+.alert-ok .alert-action { color: #065F46; }
+.focus-score { background: #7C3AED; color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
+.focus-score h3 { font-size: 14px; opacity: 0.85; margin-bottom: 8px; }
+.focus-pipeline { display: inline-block; background: white; color: #7C3AED; border-radius: 8px; padding: 6px 14px; font-weight: 800; font-size: 15px; margin-right: 8px; margin-bottom: 6px; }
 .refresh-btn { background: #EDE9FE; color: #7C3AED; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 8px; }
 .refresh-btn:hover { background: #DDD6FE; }
+.last-updated { font-size: 11px; color: #9CA3AF; }
 </style>
 </head>
 <body>
@@ -95,76 +120,90 @@ tr.hire-row { background: #EDE9FE; }
   <div class="nav-brand">🟣 IC Hiring Dashboard</div>
   <div class="nav-tab active" onclick="showPage('funnels', this)">Hiring Funnels</div>
   <div class="nav-tab" onclick="showPage('sourcing', this)">Sourcing Plan</div>
-  <div class="nav-tab" onclick="showPage('metrics', this)">Monthly Metrics</div>
+  <div class="nav-tab" onclick="showPage('alerts', this)">🚨 Alerts <span class="alert-badge" id="alert-count">—</span></div>
 </nav>
 
-<!-- FUNNELS PAGE -->
+<!-- FUNNELS -->
 <div id="funnels" class="page active">
   <h2>Hiring Funnels</h2>
-  <p class="subtitle">IC5 & IC6 · Colombia · Argentina · Mexico · 25% buffer applied · <span id="funnel-updated">Loading data...</span> <button class="refresh-btn" onclick="loadData()">↻ Refresh</button></p>
-  <div id="funnel-content"><div class="loading">Loading funnel data from Google Sheets...</div></div>
+  <p class="subtitle">IC5 & IC6 · Colombia · Argentina · Mexico · 25% buffer applied · <span id="funnel-updated" class="last-updated">Loading...</span> <button class="refresh-btn" onclick="loadData()">↻ Refresh</button></p>
+  <div id="funnel-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Loading funnel data...</div></div>
 </div>
 
-<!-- SOURCING PLAN PAGE -->
+<!-- SOURCING -->
 <div id="sourcing" class="page">
   <h2>Monthly Sourcing Plan</h2>
-  <p class="subtitle">3 hires/month target · Prioritized by business urgency · LinkedIn Recruiter + Inbound + Referrals</p>
-  <div id="sourcing-content"><div class="loading">Loading sourcing plan...</div></div>
+  <p class="subtitle">3 hires/month target · Prioritized by business urgency · LinkedIn + Inbound + Referrals</p>
+  <div id="sourcing-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Loading sourcing data...</div></div>
 </div>
 
-<!-- METRICS PAGE -->
-<div id="metrics" class="page">
-  <h2>Monthly Metrics Tracker</h2>
-  <p class="subtitle">Key indicators to monitor pipeline health · Updated from Google Sheets</p>
-  <div id="metrics-content"><div class="loading">Loading metrics...</div></div>
+<!-- ALERTS -->
+<div id="alerts" class="page">
+  <h2>🚨 Focus & Alerts</h2>
+  <p class="subtitle">What needs your attention right now — updated from pipeline data</p>
+  <div id="alerts-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Analyzing pipelines...</div></div>
 </div>
 
 <script>
 const SHEET_ID = '1AFodztA1GiCsAA7FFtR2J_wL8pl9iszxkE_XdtxbB4k';
 const BUFFER = 0.25;
+let activePipeline = 'co-ic5';
 
-// Hardcoded pipeline data (updated from Sheet when available)
 const defaultPipelines = [
   { id:'co-ic5', country:'🇨🇴 Colombia', level:'IC5', warn:false,
-    notes:['Qualification Test replaces historical Take Home Exercise. PTR 86% used.','Tech Stage 4 omitted — no activity.','Key bottlenecks: Arch Interview (42%) and Debriefing (56%).'],
+    notes:['Qualification Test replaces historical Take Home Exercise. PTR 86% used.','Tech Stage 4 omitted.','Key bottlenecks: Arch Interview (42%) and Debriefing (56%).'],
     stages:[{n:'Application Review',ptr:0.98},{n:'Screening',ptr:0.67},{n:'Qualification Test',ptr:0.86},{n:'Arch Interview',ptr:0.42},{n:'Pair Programming',ptr:0.46},{n:'TA Interview',ptr:0.63},{n:'HM Interview',ptr:0.90},{n:'Debriefing',ptr:0.56},{n:'VET',ptr:0.80},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
   { id:'co-ic6', country:'🇨🇴 Colombia', level:'IC6', warn:false,
-    notes:['No Qualification Test for IC6. Arch Interview is first technical stage.','Tech Stage 4 omitted — no activity.','Critical bottleneck: TA Interview at 4% PTR — requires urgent review.'],
+    notes:['No Qualification Test for IC6.','Critical bottleneck: TA Interview at 4% PTR.'],
     stages:[{n:'Application Review',ptr:0.19},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.58},{n:'Take Home Exercise',ptr:0.97},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.04},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
   { id:'ar-ic5', country:'🇦🇷 Argentina', level:'IC5', warn:false,
-    notes:['Qualification Test replaces historical Take Home Exercise.','Tech Stage 4 omitted — no activity.','Key bottlenecks: Arch Interview (30%) and Offer (63%).'],
+    notes:['Qualification Test replaces historical Take Home Exercise.','Key bottlenecks: Arch Interview (30%) and Offer (63%).'],
     stages:[{n:'Application Review',ptr:0.47},{n:'Screening',ptr:0.65},{n:'Qualification Test',ptr:0.91},{n:'Arch Interview',ptr:0.30},{n:'Pair Programming',ptr:0.63},{n:'TA Interview',ptr:0.79},{n:'HM Interview',ptr:0.93},{n:'Debriefing',ptr:0.64},{n:'VET',ptr:0.89},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.63},{n:'Hired',ptr:null}]},
   { id:'ar-ic6', country:'🇦🇷 Argentina', level:'IC6', warn:true,
-    notes:['⚠️ No hires recorded yet. Funnel is a projection.','Stages after Debriefing use CO IC6 PTR as reference.','To be updated once hires are recorded.'],
+    notes:['⚠️ No hires recorded yet. Projection only.','Stages after Debriefing use CO IC6 as reference.'],
     stages:[{n:'Application Review',ptr:0.40},{n:'Screening',ptr:0.60},{n:'Arch Interview',ptr:0.15},{n:'Take Home Exercise',ptr:0.80},{n:'Pair Programming',ptr:0.38},{n:'TA Interview',ptr:1.00},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
   { id:'mx-ic5', country:'🇲🇽 Mexico', level:'IC5', warn:false,
-    notes:['Qual Test + Tech Stage 1 treated as single eval — 35% effective PTR used.','Tech Stage 4 omitted — no activity.','Multiple consecutive bottlenecks in early technical stages.'],
+    notes:['Qual Test + Tech Stage 1 = 35% effective PTR.','Multiple consecutive bottlenecks in early technical stages.'],
     stages:[{n:'Application Review',ptr:0.99},{n:'Screening',ptr:0.38},{n:'Qual Test / Tech S1',ptr:0.35},{n:'Arch Interview',ptr:0.60},{n:'Pair Programming',ptr:0.53},{n:'TA Interview',ptr:0.38},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.67},{n:'VET',ptr:1.00},{n:'Allocation',ptr:0.50},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
   { id:'mx-ic6', country:'🇲🇽 Mexico', level:'IC6', warn:false,
-    notes:['No Qualification Test for IC6. Arch Interview is first technical stage.','Tech Stage 4 omitted — no activity.','Application Review at 8% PTR is the primary constraint — sourcing volume critical.'],
+    notes:['Application Review at 8% PTR — sourcing volume is #1 lever.'],
     stages:[{n:'Application Review',ptr:0.08},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.45},{n:'Take Home Exercise',ptr:0.83},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.47},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.44},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
 ];
 
+const sourcingPlans = [
+  { id:'co-ic5', country:'🇨🇴 Colombia', level:'IC5', priority:'Medium', ratio:62, w:16, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy ratio — steady cadence recommended.' },
+  { id:'co-ic6', country:'🇨🇴 Colombia', level:'IC6', priority:'High', ratio:824, w:210, channels:['LinkedIn'], note:'High-volume sourcing required. TA Interview PTR critical.' },
+  { id:'ar-ic5', country:'🇦🇷 Argentina', level:'IC5', priority:'Medium', ratio:68, w:18, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy — inbound and referrals can complement.' },
+  { id:'ar-ic6', country:'🇦🇷 Argentina', level:'IC6', priority:'Monitor', ratio:276, w:70, channels:['LinkedIn'], note:'Projection only — adjust once real hire data available.' },
+  { id:'mx-ic5', country:'🇲🇽 Mexico', level:'IC5', priority:'High', ratio:191, w:48, channels:['LinkedIn','Inbound'], note:'Monitor conversion at each tech stage closely.' },
+  { id:'mx-ic6', country:'🇲🇽 Mexico', level:'IC6', priority:'High', ratio:1098, w:275, channels:['LinkedIn'], note:'Sourcing volume is the #1 lever for this pipeline.' },
+];
+
 let pipelines = defaultPipelines;
-let activePipeline = 'co-ic5';
-let activeNavPage = 'funnels';
+let openPositions = [];
 
 function calcFunnel(stages) {
   const n = stages.length;
-  let counts = new Array(n).fill(0);
-  counts[n-1] = 1;
-  for (let i = n-2; i >= 0; i--) counts[i] = counts[i+1] / stages[i].ptr;
-  return { counts: counts.map(c => Math.ceil(c)), buffered: counts.map(c => Math.ceil(c*(1+BUFFER))) };
+  let c = new Array(n).fill(0);
+  c[n-1] = 1;
+  for (let i = n-2; i >= 0; i--) c[i] = c[i+1] / stages[i].ptr;
+  return { counts: c.map(x => Math.ceil(x)), buffered: c.map(x => Math.ceil(x*(1+BUFFER))) };
 }
 
-function getBottlenecks(stages) {
-  return stages.filter(s => s.ptr !== null && s.ptr < 0.5).sort((a,b) => a.ptr - b.ptr).slice(0,3);
+function getBadStages(stages) {
+  return stages.filter(s => s.ptr !== null && s.ptr < 0.5).sort((a,b) => a.ptr - b.ptr);
+}
+
+function daysSince(dateStr) {
+  if (!dateStr) return 0;
+  const d = new Date(dateStr);
+  return Math.floor((Date.now() - d.getTime()) / 86400000);
 }
 
 function renderFunnels() {
   const pl = pipelines.find(p => p.id === activePipeline);
   const {counts, buffered} = calcFunnel(pl.stages);
-  const bottlenecks = getBottlenecks(pl.stages);
+  const bad = getBadStages(pl.stages);
 
   let html = `
     <div class="pipeline-tabs">
@@ -176,109 +215,172 @@ function renderFunnels() {
       <div class="card card-accent"><div class="card-label">Top of Funnel (25% buffer)</div><div class="card-number">${buffered[0]}</div><div class="card-sub">candidates per hire</div></div>
       <div class="card card-light"><div class="card-label">Candidate-to-Hire Ratio</div><div class="card-number">${counts[0]}:1</div><div class="card-sub">${buffered[0]}:1 with buffer</div></div>
     </div>
-    ${bottlenecks.length ? `<div class="bottleneck-bar">🚨 <strong>Key bottlenecks:</strong> ${bottlenecks.map(b => `${b.n} (${Math.round(b.ptr*100)}%)`).join(' · ')}</div>` : ''}
+    ${bad.length ? `<div class="bottleneck-bar">🚨 <strong>Key bottlenecks:</strong> ${bad.map(b=>`${b.n} (${Math.round(b.ptr*100)}%)`).join(' · ')}</div>` : ''}
     <table>
       <thead><tr><th>Stage</th><th>PTR</th><th>Candidates / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         ${pl.stages.map((s,i) => {
-          const isHire = i === pl.stages.length-1;
-          const isBad = s.ptr !== null && s.ptr < 0.5;
+          const isHire = i===pl.stages.length-1;
+          const isBad = s.ptr!==null && s.ptr<0.5;
           return `<tr class="${isHire?'hire-row':isBad?'bottleneck-row':''}">
             <td class="${isHire?'stage-hire':isBad?'stage-bad':''}">${isHire?'🏁 ':isBad?'⚠️ ':''}${s.n}</td>
-            <td class="${isBad?'ptr-bad':'ptr-ok'}">${s.ptr !== null ? Math.round(s.ptr*100)+'%' : '—'}</td>
+            <td class="${isBad?'ptr-bad':'ptr-ok'}">${s.ptr!==null?Math.round(s.ptr*100)+'%':'—'}</td>
             <td class="td-count">${counts[i]}</td>
             <td class="${isHire?'td-buffer-hire':'td-buffer'}">${buffered[i]}</td>
           </tr>`;
         }).join('')}
       </tbody>
     </table>
-    <div class="notes">${pl.notes.map(n => `<div>${n}</div>`).join('')}</div>`;
-
+    <div class="notes">${pl.notes.map(n=>`<div>${n}</div>`).join('')}</div>`;
   document.getElementById('funnel-content').innerHTML = html;
 }
 
 function renderSourcing() {
-  const sourcingPlans = [
-    { id:'co-ic5', country:'🇨🇴 Colombia', level:'IC5', priority:2, ratio:62, outreachesPerWeek:16, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy ratio — steady sourcing cadence recommended.' },
-    { id:'co-ic6', country:'🇨🇴 Colombia', level:'IC6', priority:1, ratio:824, outreachesPerWeek:210, channels:['LinkedIn'], note:'High-volume sourcing required. Focus on LinkedIn outbound exclusively.' },
-    { id:'ar-ic5', country:'🇦🇷 Argentina', level:'IC5', priority:2, ratio:68, outreachesPerWeek:18, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy ratio — inbound and referrals can complement sourcing.' },
-    { id:'ar-ic6', country:'🇦🇷 Argentina', level:'IC6', priority:3, ratio:276, outreachesPerWeek:70, channels:['LinkedIn'], note:'Projection only — adjust once real hire data is available.' },
-    { id:'mx-ic5', country:'🇲🇽 Mexico', level:'IC5', priority:1, ratio:191, outreachesPerWeek:48, channels:['LinkedIn','Inbound'], note:'Multiple bottlenecks — monitor conversion at each tech stage closely.' },
-    { id:'mx-ic6', country:'🇲🇽 Mexico', level:'IC6', priority:1, ratio:1098, outreachesPerWeek:275, channels:['LinkedIn'], note:'Extremely high ratio — sourcing volume is the #1 lever for this pipeline.' },
-  ];
+  const totalWeekly = sourcingPlans.reduce((s, p) => s + p.w, 0);
+  const highW = sourcingPlans.filter(p=>p.priority==='High').reduce((s,p)=>s+p.w,0);
+  const medW = sourcingPlans.filter(p=>p.priority==='Medium').reduce((s,p)=>s+p.w,0);
+  const monW = sourcingPlans.filter(p=>p.priority==='Monitor').reduce((s,p)=>s+p.w,0);
 
-  const p1 = sourcingPlans.filter(s => s.priority === 1);
-  const p2 = sourcingPlans.filter(s => s.priority === 2);
-  const p3 = sourcingPlans.filter(s => s.priority === 3);
+  const pMap = {'High':'p1','Medium':'p2','Monitor':'p3'};
+  const pLabel = {'High':'🔴 High','Medium':'🟡 Medium','Monitor':'🟢 Monitor'};
 
-  const renderCard = (s) => `
+  const renderCard = s => `
     <div class="sourcing-card">
       <div class="sourcing-info">
-        <h4>${s.country.split(' ')[0]} ${s.country.split(' ').slice(1).join(' ')} — ${s.level} <span class="priority-badge p${s.priority}">${['','🔴 High','🟡 Medium','🟢 Monitor'][s.priority]}</span></h4>
+        <h4>${s.country} — ${s.level} <span class="priority-badge ${pMap[s.priority]}">${pLabel[s.priority]}</span></h4>
         <p>${s.note}</p>
-        <div class="channel-tags">${s.channels.map(c => `<span class="channel-tag">${c}</span>`).join('')}</div>
+        <div class="channel-tags">${s.channels.map(c=>`<span class="channel-tag">${c}</span>`).join('')}</div>
       </div>
       <div class="sourcing-metrics">
-        <div class="s-metric"><div class="s-metric-num">${s.outreachesPerWeek}</div><div class="s-metric-label">outreaches/week</div></div>
+        <div class="s-metric"><div class="s-metric-num">${s.w}</div><div class="s-metric-label">outreaches/week</div></div>
         <div class="s-metric"><div class="s-metric-num">${s.ratio}:1</div><div class="s-metric-label">ratio</div></div>
       </div>
     </div>`;
 
+  // Open positions section
+  let posHtml = '';
+  if (openPositions.length > 0) {
+    posHtml = `<div class="section-title">📋 Open Positions</div>` +
+      openPositions.map(p => {
+        const days = daysSince(p.open_since);
+        const pClass = p.priority?.toLowerCase() === 'high' ? 'high' : p.priority?.toLowerCase() === 'medium' ? 'medium' : 'monitor';
+        return `<div class="pos-card ${pClass}">
+          <div>
+            <div class="pos-title">${p.title || 'Open Role'} — ${p.country || ''} ${p.level || ''}</div>
+            <div class="pos-meta">Priority: ${p.priority || '—'} · Open since: ${p.open_since || '—'}</div>
+          </div>
+          <div style="text-align:center">
+            <div class="pos-days">${days}</div>
+            <div class="pos-days-label">days open</div>
+          </div>
+        </div>`;
+      }).join('');
+  } else {
+    posHtml = `<div class="section-title">📋 Open Positions</div>
+      <div style="background:white;border-radius:10px;padding:16px 20px;font-size:13px;color:#9CA3AF;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
+        Add your open positions to the <strong>Open_Positions</strong> tab in Google Sheets to see them here.
+      </div>`;
+  }
+
   document.getElementById('sourcing-content').innerHTML = `
-    <div style="background:white;border-radius:10px;padding:16px 20px;margin-bottom:24px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
-      <div style="font-size:13px;color:#374151;margin-bottom:4px;"><strong>Monthly target:</strong> 3 hires total, distributed by business urgency</div>
-      <div style="font-size:13px;color:#374151;"><strong>Inbound & referrals:</strong> Complementary — no hard cap defined yet. Track monthly contribution.</div>
+    <div class="sourcing-total-bar">
+      <div>
+        <div class="label">Total weekly outreaches needed (all pipelines)</div>
+        <div class="big">${totalWeekly.toLocaleString()}</div>
+        <div class="label">outreaches / week</div>
+      </div>
+      <div class="sourcing-breakdown">
+        <div><div class="num">${highW}</div><div class="lbl">🔴 High priority</div></div>
+        <div><div class="num">${medW}</div><div class="lbl">🟡 Medium</div></div>
+        <div><div class="num">${monW}</div><div class="lbl">🟢 Monitor</div></div>
+      </div>
     </div>
+    ${posHtml}
     <div class="section-title">🔴 High Priority</div>
-    ${p1.map(renderCard).join('')}
+    ${sourcingPlans.filter(p=>p.priority==='High').map(renderCard).join('')}
     <div class="section-title">🟡 Medium Priority</div>
-    ${p2.map(renderCard).join('')}
+    ${sourcingPlans.filter(p=>p.priority==='Medium').map(renderCard).join('')}
     <div class="section-title">🟢 Monitor</div>
-    ${p3.map(renderCard).join('')}
+    ${sourcingPlans.filter(p=>p.priority==='Monitor').map(renderCard).join('')}
   `;
 }
 
-function renderMetrics() {
-  document.getElementById('metrics-content').innerHTML = `
-    <div style="background:#EDE9FE;border-radius:10px;padding:14px 20px;margin-bottom:24px;font-size:13px;color:#7C3AED;">
-      📊 <strong>This section reads live data from your Google Sheet.</strong> Update the <em>Monthly_Tracking</em> tab each month to keep metrics current.
-    </div>
+function renderAlerts() {
+  const alerts = [];
+  let criticalCount = 0;
 
-    <div class="section-title">📌 What to monitor monthly</div>
-    <table>
-      <thead><tr><th>Metric</th><th>How to measure</th><th>Healthy target</th><th>Red flag</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Outreaches per pipeline</strong></td><td>LinkedIn Recruiter sent / week</td><td>On plan ± 10%</td><td>&gt;20% below plan</td></tr>
-        <tr><td><strong>Active candidates per stage</strong></td><td>Greenhouse pipeline view</td><td>Matches funnel model</td><td>Bottleneck stage empty</td></tr>
-        <tr><td><strong>Conversion rate per stage</strong></td><td>Passed / entered each stage</td><td>Close to historical PTR</td><td>&gt;15% drop vs PTR</td></tr>
-        <tr><td><strong>Offers accepted vs declined</strong></td><td>Offer stage outcomes</td><td>&gt;75% acceptance</td><td>&lt;50% acceptance</td></tr>
-        <tr><td><strong>Inbound + referral contribution</strong></td><td>Source tag in Greenhouse</td><td>Track % of total hires</td><td>100% from one source</td></tr>
-        <tr><td><strong>Time to fill per pipeline</strong></td><td>Days from req open to hire</td><td>Benchmark first 3 months</td><td>Stalled &gt;30 days at stage</td></tr>
-      </tbody>
-    </table>
+  // Analyze each pipeline
+  pipelines.forEach(pl => {
+    const bad = getBadStages(pl.stages);
+    const {counts} = calcFunnel(pl.stages);
+    const label = `${pl.country.split(' ')[0]} ${pl.level}`;
 
-    <div class="section-title" style="margin-top:28px;">📋 Monthly review checklist</div>
-    <div style="background:white;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">
-      ${[
-        ['Did we hit outreach targets for each pipeline?', 'Compare actual outreaches vs plan'],
-        ['Are bottleneck stages converting better or worse?', 'Compare actual PTR vs historical PTR'],
-        ['How many hires came from inbound/referrals vs sourcing?', 'Track source mix'],
-        ['Any offer declines? What were the reasons?', 'Log decline reasons in Sheet'],
-        ['Do any pipelines need priority adjustment?', 'Re-rank based on business urgency'],
-        ['Update PTR data if 10+ new candidates have moved through a stage', 'Keep funnel model fresh'],
-      ].map(([q,h]) => `
-        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid #F3F4F6;">
-          <div style="width:18px;height:18px;border:2px solid #A78BFA;border-radius:4px;flex-shrink:0;margin-top:1px;"></div>
-          <div><div style="font-size:14px;color:#111827;">${q}</div><div style="font-size:12px;color:#9CA3AF;margin-top:2px;">${h}</div></div>
-        </div>`).join('')}
-    </div>
+    // Critical PTR alerts
+    bad.filter(s => s.ptr < 0.15).forEach(s => {
+      criticalCount++;
+      alerts.push({ type:'critical', icon:'🚨', title:`${label} — ${s.n} at ${Math.round(s.ptr*100)}% PTR`, body:`This is an extreme bottleneck. For every 100 candidates entering this stage, only ${Math.round(s.ptr*100)} pass. This single stage is driving up your candidate-to-hire ratio significantly.`, action:`Action: Review evaluation criteria and interviewer calibration for ${s.n} in ${label}.` });
+    });
 
-    <div class="section-title" style="margin-top:28px;">🗂️ Google Sheet structure</div>
-    <div style="background:white;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.07);font-size:13px;color:#374151;line-height:2;">
-      <div>📄 <strong>PTR_Data</strong> — Pass through rates per pipeline. Update when PTRs change significantly.</div>
-      <div>📄 <strong>Sourcing_Plan</strong> — Weekly outreach targets per pipeline. Adjust monthly based on priority.</div>
-      <div>📄 <strong>Monthly_Tracking</strong> — Actual outreaches, active candidates per stage, offer outcomes. Fill monthly.</div>
+    // High ratio alert
+    if (counts[0] > 500 && !pl.warn) {
+      criticalCount++;
+      alerts.push({ type:'critical', icon:'📊', title:`${label} — ${counts[0]}:1 ratio requires massive sourcing volume`, body:`You need ${counts[0]} candidates at top of funnel for every 1 hire. With 25% buffer that's ${Math.ceil(counts[0]*1.25)} candidates. This pipeline needs dedicated high-volume sourcing.`, action:`Action: Prioritize LinkedIn outbound for ${label} exclusively. Consider whether PTRs can be improved to reduce this ratio.` });
+    }
+
+    // Warning PTR alerts
+    bad.filter(s => s.ptr >= 0.15 && s.ptr < 0.35).forEach(s => {
+      alerts.push({ type:'warning', icon:'⚠️', title:`${label} — ${s.n} at ${Math.round(s.ptr*100)}% PTR`, body:`Significant drop-off at this stage. Worth reviewing whether evaluation criteria is calibrated correctly or if there's a sourcing quality issue upstream.`, action:`Action: Audit last 10 candidates who failed ${s.n} in ${label} — look for patterns.` });
+    });
+
+    // Projection warning
+    if (pl.warn) {
+      alerts.push({ type:'warning', icon:'🔮', title:`${label} — No hires recorded yet`, body:`Funnel numbers are projections based on available PTR data and CO IC6 as reference. Numbers could shift significantly once real hires are recorded.`, action:`Action: Prioritize closing first hire in ${label} to establish real baseline data.` });
+    }
+  });
+
+  // Open positions alerts
+  openPositions.forEach(p => {
+    const days = daysSince(p.open_since);
+    if (days > 60) {
+      criticalCount++;
+      alerts.push({ type:'critical', icon:'📅', title:`${p.country} ${p.level} — Open for ${days} days`, body:`This position has been open for over 60 days. At current conversion rates, review whether sourcing volume and pipeline activity are on track.`, action:`Action: Check active candidates in pipeline and ensure outreach targets are being met.` });
+    } else if (days > 30) {
+      alerts.push({ type:'warning', icon:'📅', title:`${p.country} ${p.level} — Open for ${days} days`, body:`This position is approaching 30+ days open. Monitor pipeline activity closely.`, action:`Action: Verify weekly outreach cadence is on plan.` });
+    }
+  });
+
+  // Healthy pipelines
+  const healthy = pipelines.filter(pl => !pl.warn && getBadStages(pl.stages).filter(s=>s.ptr<0.35).length===0);
+  if (healthy.length > 0) {
+    alerts.push({ type:'ok', icon:'✅', title:`Pipelines looking healthy`, body:`${healthy.map(p=>`${p.country.split(' ')[0]} ${p.level}`).join(', ')} have no extreme bottlenecks. Maintain current sourcing cadence.`, action:`Keep monitoring monthly PTR changes.` });
+  }
+
+  // Update badge
+  document.getElementById('alert-count').textContent = criticalCount > 0 ? criticalCount : '✓';
+
+  // Focus pipelines (highest ratio non-projection)
+  const focusPipelines = [...pipelines].filter(p=>!p.warn).sort((a,b) => {
+    const ra = calcFunnel(a.stages).counts[0];
+    const rb = calcFunnel(b.stages).counts[0];
+    return rb - ra;
+  }).slice(0,3);
+
+  const alertHtml = alerts.map(a => `
+    <div class="alert-card alert-${a.type}">
+      <div class="alert-icon">${a.icon}</div>
+      <div>
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-body">${a.body}</div>
+        <div class="alert-action">→ ${a.action}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('alerts-content').innerHTML = `
+    <div class="focus-score">
+      <h3>🎯 Focus your sourcing energy here first:</h3>
+      ${focusPipelines.map(p=>`<span class="focus-pipeline">${p.country.split(' ')[0]} ${p.level} (${calcFunnel(p.stages).counts[0]}:1)</span>`).join('')}
     </div>
+    ${alertHtml}
   `;
 }
 
@@ -292,46 +394,51 @@ function showPage(id, el) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
-  activeNavPage = id;
+}
+
+async function loadSheet(sheetName) {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+    return json.table;
+  } catch(e) { return null; }
 }
 
 async function loadData() {
   document.getElementById('funnel-updated').textContent = 'Refreshing...';
-  try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=PTR_Data`;
-    const res = await fetch(url);
-    const text = await res.text();
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-    const rows = json.table.rows;
-    if (rows && rows.length > 1) {
-      // Parse sheet data and update pipelines
-      // Expected columns: Pipeline ID | Stage | PTR
-      const updates = {};
-      rows.forEach(row => {
-        if (!row.c[0] || !row.c[0].v) return;
-        const id = row.c[0].v.toString().toLowerCase().replace(' ','_');
-        const stage = row.c[1]?.v;
-        const ptr = row.c[2]?.v;
-        if (!updates[id]) updates[id] = [];
-        if (stage && ptr !== undefined) updates[id].push({ n: stage, ptr: ptr === 1 ? 1.00 : ptr });
-      });
-      pipelines = pipelines.map(p => {
-        const key = p.id;
-        if (updates[key] && updates[key].length > 0) {
-          return { ...p, stages: [...updates[key], { n: 'Hired', ptr: null }] };
-        }
-        return p;
-      });
-      document.getElementById('funnel-updated').textContent = `Last updated: ${new Date().toLocaleDateString()}`;
-    } else {
-      document.getElementById('funnel-updated').textContent = 'Using default data (Sheet empty)';
-    }
-  } catch(e) {
-    document.getElementById('funnel-updated').textContent = 'Using default data (Sheet not connected yet)';
+
+  // Load PTR data
+  const ptrTable = await loadSheet('PTR_Data');
+  if (ptrTable?.rows?.length > 1) {
+    const updates = {};
+    ptrTable.rows.forEach(row => {
+      if (!row.c[0]?.v) return;
+      const id = row.c[0].v.toString().trim();
+      const stage = row.c[1]?.v;
+      const ptr = parseFloat(row.c[2]?.v);
+      if (!updates[id]) updates[id] = [];
+      if (stage && !isNaN(ptr)) updates[id].push({ n: stage, ptr });
+    });
+    pipelines = defaultPipelines.map(p => updates[p.id]?.length ? { ...p, stages: [...updates[p.id], { n:'Hired', ptr:null }] } : p);
   }
+
+  // Load open positions
+  const posTable = await loadSheet('Open_Positions');
+  if (posTable?.rows?.length > 1) {
+    const cols = posTable.cols.map(c => c.label.toLowerCase().replace(/ /g,'_'));
+    openPositions = posTable.rows.slice(1).map(row => {
+      const obj = {};
+      cols.forEach((col, i) => { obj[col] = row.c[i]?.v || ''; });
+      return obj;
+    }).filter(p => p.title || p.country);
+  }
+
+  document.getElementById('funnel-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
   renderFunnels();
   renderSourcing();
-  renderMetrics();
+  renderAlerts();
 }
 
 loadData();
