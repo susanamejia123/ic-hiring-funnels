@@ -594,7 +594,7 @@ async function loadData(){
     const cols=mtT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
     monthlyData=mtT.rows.slice(2).filter(r=>r.c[0]?.v).map(r=>{
       const monthRaw=(r.c[0]?.f||r.c[0]?.v?.toString()||'').trim();
-      const pipeline=r.c[1]?.v?.toString().trim()||'';
+      const pipeline=r.c[1]?.v?.toString().trim().replace(/\s*[—–-]\s*/g,' - ')||'';
       const country=r.c[2]?.v?.toString().trim()||'';
       const level=r.c[3]?.v?.toString().trim()||'';
       const stage=r.c[4]?.v?.toString().trim()||'';
