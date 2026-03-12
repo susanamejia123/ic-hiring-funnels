@@ -599,14 +599,26 @@ async function loadData(){
       const level=r.c[3]?.v?.toString().trim()||'';
       const stage=r.c[4]?.v?.toString().trim()||'';
       const candidates=r.c[5]?.v?.toString().trim()||'0';
-      // Handle month format — could be "2025-04" or a date object
+      // Handle month format from Google Sheets — could be "2025-04", date serial, or Date()
       let month=monthRaw;
-      if(monthRaw.includes('Date'))month=new Date(parseInt(monthRaw.match(/\d+/)[0])).toISOString().slice(0,7);
+      if(monthRaw.match(/^\d+$/)) {
+        // Google Sheets date serial number — convert to YYYY-MM
+        const d=new Date(1899,11,30);
+        d.setDate(d.getDate()+parseInt(monthRaw));
+        month=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      } else if(monthRaw.includes('Date')) {
+        month=new Date(parseInt(monthRaw.match(/\d+/)[0])).toISOString().slice(0,7);
+      }
       return{month,pipeline,country,level,stage,candidates};
     });
   }
 
   document.getElementById('updated').textContent=`Updated: ${new Date().toLocaleString()}`;
+  // DEBUG — remove later
+  console.log('Monthly data count:', monthlyData.length);
+  console.log('Sample row:', JSON.stringify(monthlyData[0]));
+  console.log('Open positions count:', openPositions.length);
+  console.log('Sample position:', JSON.stringify(openPositions[0]));
   renderFunnels();
   renderSourcing();
   renderPositions();
