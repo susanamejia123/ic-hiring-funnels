@@ -3,151 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IC Hiring Funnel Dashboard</title>
+<title>IC Hiring Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F3FF; min-height: 100vh; }
-nav { background: #7C3AED; padding: 0 32px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
-.nav-brand { color: white; font-weight: 800; font-size: 16px; padding: 18px 24px 18px 0; border-right: 1px solid rgba(255,255,255,0.2); margin-right: 16px; }
-.nav-tab { color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; padding: 18px 20px; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; position: relative; }
-.nav-tab:hover { color: white; }
-.nav-tab.active { color: white; border-bottom: 3px solid white; }
-.alert-badge { background: #EF4444; color: white; border-radius: 10px; font-size: 10px; font-weight: 800; padding: 1px 6px; position: absolute; top: 10px; right: 4px; }
-.page { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
-.page.active { display: block; }
-h2 { color: #7C3AED; font-size: 20px; margin-bottom: 4px; }
-.subtitle { color: #6B7280; font-size: 13px; margin-bottom: 24px; }
-.section-title { font-size: 15px; font-weight: 700; color: #7C3AED; margin: 24px 0 12px; }
-.pipeline-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
-.ptab { padding: 7px 16px; border-radius: 20px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: #EDE9FE; color: #7C3AED; transition: all 0.15s; }
-.ptab.active { background: #7C3AED; color: white; }
-.ptab.warn { outline: 2px solid #DC2626; }
-.ptab:hover:not(.active) { background: #DDD6FE; }
-.cards { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-.card { border-radius: 12px; padding: 16px 20px; flex: 1; min-width: 150px; }
-.card-purple { background: #7C3AED; color: white; }
-.card-accent { background: #A78BFA; color: white; }
-.card-light { background: #EDE9FE; color: #7C3AED; }
-.card-label { font-size: 11px; opacity: 0.85; margin-bottom: 4px; }
-.card-number { font-size: 30px; font-weight: 800; line-height: 1; }
-.card-sub { font-size: 11px; opacity: 0.85; margin-top: 4px; }
-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 16px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-thead tr { background: #7C3AED; color: white; }
-th { padding: 11px 14px; text-align: left; font-weight: 600; }
-th:not(:first-child) { text-align: center; }
-td { padding: 10px 14px; border-bottom: 1px solid #F3F4F6; }
-td:not(:first-child) { text-align: center; }
-tr.bottleneck-row { background: #FFF7ED; }
-tr.hire-row { background: #EDE9FE; }
-.ptr-bad { color: #C2410C; font-weight: 700; }
-.ptr-ok { color: #6B7280; }
-.td-buffer { background: #A78BFA; color: white; font-weight: 700; }
-.td-buffer-hire { background: #7C3AED; color: white; font-weight: 700; }
-.td-count { font-weight: 600; color: #111827; }
-.stage-bad { color: #C2410C; font-weight: 700; }
-.stage-hire { color: #7C3AED; font-weight: 700; }
-.notes { font-size: 12px; color: #9CA3AF; line-height: 1.8; }
-.notes div::before { content: "* "; }
-.panel { display: none; }
-.panel.active { display: block; }
-.bottleneck-bar { background: #FEF9C3; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; }
-.warning-banner { background: #FEE2E2; border: 1px solid #DC2626; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; font-size: 13px; color: #DC2626; }
-.sourcing-total-bar { background: #7C3AED; color: white; border-radius: 12px; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-.sourcing-total-bar .big { font-size: 36px; font-weight: 800; }
-.sourcing-total-bar .label { font-size: 13px; opacity: 0.85; }
-.sourcing-breakdown { display: flex; gap: 20px; flex-wrap: wrap; }
-.sourcing-breakdown div { text-align: center; }
-.sourcing-breakdown .num { font-size: 20px; font-weight: 800; }
-.sourcing-breakdown .lbl { font-size: 11px; opacity: 0.75; }
-.sourcing-card { background: white; border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-.sourcing-info h4 { font-size: 15px; color: #111827; margin-bottom: 4px; }
-.sourcing-info p { font-size: 12px; color: #6B7280; }
-.s-metric { text-align: center; }
-.s-metric-num { font-size: 22px; font-weight: 800; color: #7C3AED; }
-.s-metric-label { font-size: 11px; color: #6B7280; }
-.channel-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-.channel-tag { background: #EDE9FE; color: #7C3AED; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-.priority-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-left: 8px; }
-.p1 { background: #FEE2E2; color: #DC2626; }
-.p2 { background: #FEF9C3; color: #92400E; }
-.p3 { background: #D1FAE5; color: #065F46; }
-.pos-card { background: white; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; border-left: 4px solid #7C3AED; }
-.pos-card.high { border-left-color: #EF4444; }
-.pos-card.medium { border-left-color: #F59E0B; }
-.pos-card.monitor { border-left-color: #10B981; }
-.pos-title { font-size: 14px; font-weight: 700; color: #111827; }
-.pos-meta { font-size: 12px; color: #6B7280; margin-top: 2px; }
-.pos-days { font-size: 22px; font-weight: 800; color: #7C3AED; }
-.pos-days-label { font-size: 11px; color: #6B7280; }
-.alert-card { border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
-.alert-critical { background: #FEE2E2; border: 1px solid #FECACA; }
-.alert-warning { background: #FEF9C3; border: 1px solid #FDE68A; }
-.alert-ok { background: #D1FAE5; border: 1px solid #A7F3D0; }
-.alert-icon { font-size: 22px; flex-shrink: 0; }
-.alert-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.alert-critical .alert-title { color: #DC2626; }
-.alert-warning .alert-title { color: #92400E; }
-.alert-ok .alert-title { color: #065F46; }
-.alert-body { font-size: 13px; color: #374151; }
-.alert-action { font-size: 12px; font-weight: 600; margin-top: 6px; }
-.alert-critical .alert-action { color: #DC2626; }
-.alert-warning .alert-action { color: #92400E; }
-.alert-ok .alert-action { color: #065F46; }
-.focus-score { background: #7C3AED; color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; }
-.focus-score h3 { font-size: 14px; opacity: 0.85; margin-bottom: 8px; }
-.focus-pipeline { display: inline-block; background: white; color: #7C3AED; border-radius: 8px; padding: 6px 14px; font-weight: 800; font-size: 15px; margin-right: 8px; margin-bottom: 6px; }
-.refresh-btn { background: #EDE9FE; color: #7C3AED; border: none; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 8px; }
-.refresh-btn:hover { background: #DDD6FE; }
-.last-updated { font-size: 11px; color: #9CA3AF; }
-.chart-container { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 20px; }
-.chart-title { font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 16px; }
-.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-.kpi-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.kpi-filter select { padding: 6px 12px; border-radius: 8px; border: 1px solid #DDD6FE; color: #7C3AED; font-size: 13px; font-weight: 600; background: white; cursor: pointer; }
-.status-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; }
-.status-approved { background: #D1FAE5; color: #065F46; }
-.status-open { background: #DBEAFE; color: #1D40AE; }
-.status-pending { background: #FEF9C3; color: #92400E; }
-.status-hold { background: #FEE2E2; color: #DC2626; }
-.status-hired { background: #EDE9FE; color: #7C3AED; }
-.status-offer { background: #FCE7F3; color: #9D174D; }
-@media (max-width: 600px) { .charts-grid { grid-template-columns: 1fr; } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F3FF;min-height:100vh}
+nav{background:#7C3AED;padding:0 24px;display:flex;align-items:center;flex-wrap:wrap}
+.nav-brand{color:white;font-weight:800;font-size:15px;padding:16px 20px 16px 0;border-right:1px solid rgba(255,255,255,0.2);margin-right:12px}
+.nav-tab{color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;padding:16px 16px;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.15s;position:relative}
+.nav-tab:hover{color:white}
+.nav-tab.active{color:white;border-bottom:3px solid white}
+.badge{background:#EF4444;color:white;border-radius:10px;font-size:10px;font-weight:800;padding:1px 6px;position:absolute;top:8px;right:2px}
+.page{display:none;padding:24px;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+h2{color:#7C3AED;font-size:19px;margin-bottom:3px}
+.sub{color:#6B7280;font-size:12px;margin-bottom:20px}
+.sec{font-size:14px;font-weight:700;color:#7C3AED;margin:20px 0 10px}
+.cards{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.card{border-radius:12px;padding:14px 18px;flex:1;min-width:140px}
+.cp{background:#7C3AED;color:white}.ca{background:#A78BFA;color:white}.cl{background:#EDE9FE;color:#7C3AED}
+.clabel{font-size:11px;opacity:0.85;margin-bottom:3px}
+.cnum{font-size:28px;font-weight:800;line-height:1}
+.csub{font-size:11px;opacity:0.85;margin-top:3px}
+/* Pipeline tabs */
+.ptabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;align-items:center}
+.ptab{padding:6px 14px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#EDE9FE;color:#7C3AED;transition:all 0.15s}
+.ptab.active{background:#7C3AED;color:white}
+.ptab.warn{outline:2px solid #DC2626}
+.ptab:hover:not(.active){background:#DDD6FE}
+.country-label{font-size:11px;color:#9CA3AF;margin-right:4px;align-self:center}
+/* Funnel visual */
+.funnel-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.funnel-visual{background:white;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.funnel-table-wrap{background:white;border-radius:10px;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+.stage-bar-row{display:flex;align-items:center;padding:8px 16px;border-bottom:1px solid #F3F4F6;gap:10px}
+.stage-bar-row:last-child{border-bottom:none}
+.stage-bar-name{font-size:12px;width:160px;flex-shrink:0;color:#374151}
+.stage-bar-name.bad{color:#C2410C;font-weight:700}
+.stage-bar-name.hire{color:#7C3AED;font-weight:700}
+.stage-bar-track{flex:1;height:10px;background:#F3F4F6;border-radius:5px;overflow:hidden}
+.stage-bar-fill{height:100%;border-radius:5px;transition:width 0.5s}
+.stage-bar-pct{font-size:11px;width:40px;text-align:right;color:#6B7280;flex-shrink:0}
+.stage-bar-pct.bad{color:#C2410C;font-weight:700}
+.funnel-shape{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0}
+.funnel-stage{display:flex;align-items:center;justify-content:center;border-radius:4px;color:white;font-size:11px;font-weight:700;transition:width 0.5s;min-height:28px;position:relative;cursor:default}
+.funnel-stage-label{position:absolute;left:calc(50% + 4px);transform:translateX(-50%);white-space:nowrap;font-size:10px;color:white;pointer-events:none}
+.funnel-drop{font-size:10px;color:#EF4444;text-align:center;margin:-1px 0}
+.bneck{background:#FEF9C3;border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:12px}
+.warn-banner{background:#FEE2E2;border:1px solid #FECACA;border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:12px;color:#DC2626}
+.notes{font-size:11px;color:#9CA3AF;line-height:1.8}
+.notes div::before{content:"* "}
+@media(max-width:700px){.funnel-wrap{grid-template-columns:1fr}}
+/* Sourcing */
+.stotal{background:#7C3AED;color:white;border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.stotal .big{font-size:34px;font-weight:800}
+.stotal .lbl{font-size:12px;opacity:0.85}
+.sbd{display:flex;gap:18px;flex-wrap:wrap}
+.sbd div{text-align:center}
+.sbd .n{font-size:18px;font-weight:800}
+.sbd .l{font-size:10px;opacity:0.75}
+.scard{background:white;border-radius:10px;padding:14px 18px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.sinfo h4{font-size:14px;color:#111827;margin-bottom:3px}
+.sinfo p{font-size:11px;color:#6B7280}
+.sm{text-align:center}
+.smn{font-size:20px;font-weight:800;color:#7C3AED}
+.sml{font-size:10px;color:#6B7280}
+.ctag{background:#EDE9FE;color:#7C3AED;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600}
+.ctags{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.pbadge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-left:6px}
+.p1{background:#FEE2E2;color:#DC2626}.p2{background:#FEF9C3;color:#92400E}.p3{background:#D1FAE5;color:#065F46}
+/* Live sourcing */
+.live-bar{height:12px;border-radius:6px;overflow:hidden;background:#F3F4F6;margin:6px 0}
+.live-fill{height:100%;border-radius:6px;background:#7C3AED;transition:width 0.5s}
+.live-fill.over{background:#10B981}
+.live-fill.warn{background:#F59E0B}
+/* Open positions */
+.pos-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:20px}
+.pos-sum-card{background:white;border-radius:10px;padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);text-align:center}
+.pos-sum-num{font-size:26px;font-weight:800;color:#7C3AED}
+.pos-sum-label{font-size:11px;color:#6B7280;margin-top:2px}
+.pos-sum-sub{font-size:10px;color:#9CA3AF;margin-top:2px}
+.pos-card{background:white;border-radius:10px;padding:12px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-left:4px solid #7C3AED}
+.pos-card.urgent{border-left-color:#EF4444}
+.pos-card.med{border-left-color:#F59E0B}
+.pos-title{font-size:13px;font-weight:700;color:#111827}
+.pos-meta{font-size:11px;color:#6B7280;margin-top:2px}
+.pos-days{font-size:20px;font-weight:800}
+.pos-days-lbl{font-size:10px;color:#6B7280}
+.collapsible{background:white;border-radius:10px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+.collapsible-header{padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;color:#7C3AED}
+.collapsible-header:hover{background:#F5F3FF}
+.collapsible-body{display:none;padding:0 16px 12px}
+.collapsible-body.open{display:block}
+/* KPIs */
+.kpi-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.kpi-filters select{padding:6px 10px;border-radius:8px;border:1px solid #DDD6FE;color:#7C3AED;font-size:12px;font-weight:600;background:white;cursor:pointer}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.chart-box{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.chart-title{font-size:13px;font-weight:700;color:#374151;margin-bottom:12px}
+@media(max-width:600px){.charts-grid{grid-template-columns:1fr}}
+/* Checklist */
+.week-header{background:#7C3AED;color:white;border-radius:12px;padding:16px 20px;margin-bottom:20px}
+.week-header h3{font-size:15px;font-weight:800;margin-bottom:4px}
+.week-header p{font-size:12px;opacity:0.8}
+.checklist-section{background:white;border-radius:10px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:hidden}
+.cl-section-header{padding:12px 16px;font-size:13px;font-weight:700;border-bottom:1px solid #F3F4F6;display:flex;justify-content:space-between;align-items:center}
+.cl-item{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-bottom:1px solid #F9F9F9;cursor:pointer;transition:background 0.1s}
+.cl-item:hover{background:#FAFAFA}
+.cl-item:last-child{border-bottom:none}
+.cl-item.done{opacity:0.5}
+.cl-checkbox{width:18px;height:18px;border:2px solid #A78BFA;border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.cl-item.done .cl-checkbox{background:#7C3AED;border-color:#7C3AED}
+.cl-check-mark{color:white;font-size:11px;display:none}
+.cl-item.done .cl-check-mark{display:block}
+.cl-text{flex:1}
+.cl-title{font-size:13px;color:#111827;font-weight:500}
+.cl-item.done .cl-title{text-decoration:line-through;color:#9CA3AF}
+.cl-desc{font-size:11px;color:#9CA3AF;margin-top:2px}
+.cl-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
+.tag-critical{background:#FEE2E2;color:#DC2626}
+.tag-weekly{background:#EDE9FE;color:#7C3AED}
+.tag-monthly{background:#D1FAE5;color:#065F46}
+.progress-bar{height:6px;background:#F3F4F6;border-radius:3px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:#7C3AED;border-radius:3px;transition:width 0.3s}
+.refresh-btn{background:#EDE9FE;color:#7C3AED;border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;margin-left:8px}
 </style>
 </head>
 <body>
 <nav>
-  <div class="nav-brand">🟣 IC Hiring Dashboard</div>
-  <div class="nav-tab active" onclick="showPage('funnels',this)">Hiring Funnels</div>
-  <div class="nav-tab" onclick="showPage('sourcing',this)">Sourcing Plan</div>
-  <div class="nav-tab" onclick="showPage('positions',this)">Open Positions</div>
+  <div class="nav-brand">🟣 IC Hiring</div>
+  <div class="nav-tab active" onclick="showPage('funnels',this)">Funnels</div>
+  <div class="nav-tab" onclick="showPage('sourcing',this)">Sourcing</div>
+  <div class="nav-tab" onclick="showPage('positions',this)">Positions</div>
   <div class="nav-tab" onclick="showPage('kpis',this)">📈 KPIs</div>
-  <div class="nav-tab" onclick="showPage('alerts',this)">🚨 Alerts <span class="alert-badge" id="alert-count">—</span></div>
+  <div class="nav-tab" onclick="showPage('focus',this)">✅ Focus <span class="badge" id="badge">—</span></div>
 </nav>
 
+<!-- FUNNELS -->
 <div id="funnels" class="page active">
   <h2>Hiring Funnels</h2>
-  <p class="subtitle">IC4, IC5 & IC6 · Colombia · Argentina · Mexico · 25% buffer · <span id="funnel-updated" class="last-updated">Loading...</span> <button class="refresh-btn" onclick="loadData()">↻ Refresh</button></p>
-  <div id="funnel-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Loading...</div></div>
+  <p class="sub">IC4, IC5 & IC6 · CO · AR · MX · 25% buffer · <span id="updated" style="color:#9CA3AF;font-size:11px">Loading...</span> <button class="refresh-btn" onclick="loadData()">↻</button></p>
+  <div id="funnel-content"></div>
 </div>
 
+<!-- SOURCING -->
 <div id="sourcing" class="page">
-  <h2>Monthly Sourcing Plan</h2>
-  <p class="subtitle">3 hires/month target · Prioritized by business urgency</p>
+  <h2>Sourcing Plan</h2>
+  <p class="sub">Weekly outreach targets · 3 hires/month goal</p>
   <div id="sourcing-content"></div>
 </div>
 
+<!-- POSITIONS -->
 <div id="positions" class="page">
   <h2>Open Positions</h2>
-  <p class="subtitle">Live from Xavier · Auto-updated when you refresh</p>
-  <div id="positions-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Loading...</div></div>
+  <p class="sub">Live from Xavier · Actively managed = Open status</p>
+  <div id="positions-content"></div>
 </div>
 
+<!-- KPIS -->
 <div id="kpis" class="page">
   <h2>📈 Historical KPIs</h2>
-  <p class="subtitle">Trends from January 2025 · Based on Greenhouse data</p>
-  <div class="kpi-filter">
-    <select id="kpi-pipeline" onchange="renderKPIs()">
+  <p class="sub">Trends from GH data · Starting March 2026</p>
+  <div class="kpi-filters">
+    <select id="f-pipeline" onchange="renderKPIs()">
       <option value="all">All Pipelines</option>
       <option value="CO - IC4">CO IC4</option>
       <option value="CO - IC5">CO IC5</option>
@@ -158,366 +176,434 @@ tr.hire-row { background: #EDE9FE; }
       <option value="MX - IC5">MX IC5</option>
       <option value="MX - IC6">MX IC6</option>
     </select>
-    <select id="kpi-country" onchange="renderKPIs()">
-      <option value="all">All Countries</option>
-      <option value="Colombia">Colombia</option>
-      <option value="Argentina">Argentina</option>
-      <option value="México">México</option>
-    </select>
   </div>
-  <div id="kpis-content"><div style="text-align:center;padding:40px;color:#9CA3AF;">Loading KPI data...</div></div>
+  <div id="kpis-content"></div>
 </div>
 
-<div id="alerts" class="page">
-  <h2>🚨 Focus & Alerts</h2>
-  <p class="subtitle">What needs your attention right now</p>
-  <div id="alerts-content"></div>
+<!-- FOCUS CHECKLIST -->
+<div id="focus" class="page">
+  <h2>✅ Weekly Focus</h2>
+  <p class="sub">Your action plan for this week · Check off as you go</p>
+  <div id="focus-content"></div>
 </div>
 
 <script>
-const SHEET_ID = '1AFodztA1GiCsAA7FFtR2J_wL8pl9iszxkE_XdtxbB4k';
-const BUFFER = 0.25;
-let activePipeline = 'co-ic5';
-let pipelines = [];
-let openPositions = [];
-let monthlyData = [];
+const SHEET_ID='1AFodztA1GiCsAA7FFtR2J_wL8pl9iszxkE_XdtxbB4k';
+const BUFFER=0.25;
+let activePipeline='co-ic5';
+let pipelines=[];
+let openPositions=[];
+let monthlyData=[];
+let checkStates={};
 
-const defaultPipelines = [
-  { id:'co-ic4', country:'🇨🇴 Colombia', level:'IC4', warn:false,
-    notes:['IC4 skips Arch Interview — Pair Programming is first technical stage.','Tech Stage 4 omitted.','Key bottleneck: TA Interview (28%).'],
-    stages:[{n:'Application Review',ptr:0.46},{n:'Screening',ptr:0.75},{n:'Qualification Test',ptr:0.86},{n:'Pair Programming',ptr:0.58},{n:'TA Interview',ptr:0.28},{n:'HM Interview',ptr:0.86},{n:'Debriefing',ptr:0.89},{n:'VET',ptr:0.88},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.79},{n:'Hired',ptr:null}]},
-  { id:'co-ic5', country:'🇨🇴 Colombia', level:'IC5', warn:false,
-    notes:['Qualification Test replaces historical Take Home Exercise.','Key bottlenecks: Arch Interview (42%) and Debriefing (56%).'],
-    stages:[{n:'Application Review',ptr:0.98},{n:'Screening',ptr:0.67},{n:'Qualification Test',ptr:0.86},{n:'Arch Interview',ptr:0.42},{n:'Pair Programming',ptr:0.46},{n:'TA Interview',ptr:0.63},{n:'HM Interview',ptr:0.90},{n:'Debriefing',ptr:0.56},{n:'VET',ptr:0.80},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
-  { id:'co-ic6', country:'🇨🇴 Colombia', level:'IC6', warn:false,
-    notes:['No Qualification Test for IC6.','Critical bottleneck: TA Interview at 4% PTR.'],
-    stages:[{n:'Application Review',ptr:0.19},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.58},{n:'Take Home Exercise',ptr:0.97},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.04},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
-  { id:'ar-ic5', country:'🇦🇷 Argentina', level:'IC5', warn:false,
-    notes:['Key bottlenecks: Arch Interview (30%) and Offer (63%).'],
-    stages:[{n:'Application Review',ptr:0.47},{n:'Screening',ptr:0.65},{n:'Qualification Test',ptr:0.91},{n:'Arch Interview',ptr:0.30},{n:'Pair Programming',ptr:0.63},{n:'TA Interview',ptr:0.79},{n:'HM Interview',ptr:0.93},{n:'Debriefing',ptr:0.64},{n:'VET',ptr:0.89},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.63},{n:'Hired',ptr:null}]},
-  { id:'ar-ic6', country:'🇦🇷 Argentina', level:'IC6', warn:true,
-    notes:['⚠️ No hires recorded yet. Projection only.','Stages after Debriefing use CO IC6 as reference.'],
-    stages:[{n:'Application Review',ptr:0.40},{n:'Screening',ptr:0.60},{n:'Arch Interview',ptr:0.15},{n:'Take Home Exercise',ptr:0.80},{n:'Pair Programming',ptr:0.38},{n:'TA Interview',ptr:1.00},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
-  { id:'mx-ic4', country:'🇲🇽 Mexico', level:'IC4', warn:false,
-    notes:['IC4 skips Arch Interview — Pair Programming is first technical stage.','Key bottleneck: TA Interview (29%).'],
-    stages:[{n:'Application Review',ptr:0.99},{n:'Screening',ptr:0.72},{n:'Qualification Test',ptr:0.56},{n:'Pair Programming',ptr:0.45},{n:'TA Interview',ptr:0.29},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.88},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.71},{n:'Hired',ptr:null}]},
-  { id:'mx-ic5', country:'🇲🇽 Mexico', level:'IC5', warn:false,
-    notes:['Qual Test + Tech Stage 1 = 35% effective PTR.','Multiple consecutive bottlenecks in early stages.'],
-    stages:[{n:'Application Review',ptr:0.99},{n:'Screening',ptr:0.38},{n:'Qual Test / Tech S1',ptr:0.35},{n:'Arch Interview',ptr:0.60},{n:'Pair Programming',ptr:0.53},{n:'TA Interview',ptr:0.38},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.67},{n:'VET',ptr:1.00},{n:'Allocation',ptr:0.50},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
-  { id:'mx-ic6', country:'🇲🇽 Mexico', level:'IC6', warn:false,
-    notes:['Application Review at 8% PTR — sourcing volume is #1 lever.'],
-    stages:[{n:'Application Review',ptr:0.08},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.45},{n:'Take Home Exercise',ptr:0.83},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.47},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.44},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
+const defaultPipelines=[
+  {id:'co-ic4',country:'🇨🇴 Colombia',level:'IC4',warn:false,notes:['IC4 skips Arch Interview — Pair Programming is first technical stage.','Key bottleneck: TA Interview (28%).'],stages:[{n:'Application Review',ptr:0.46},{n:'Screening',ptr:0.75},{n:'Qualification Test',ptr:0.86},{n:'Pair Programming',ptr:0.58},{n:'TA Interview',ptr:0.28},{n:'HM Interview',ptr:0.86},{n:'Debriefing',ptr:0.89},{n:'VET',ptr:0.88},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.79},{n:'Hired',ptr:null}]},
+  {id:'co-ic5',country:'🇨🇴 Colombia',level:'IC5',warn:false,notes:['Qualification Test replaces historical Take Home Exercise.','Key bottlenecks: Arch Interview (42%) and Debriefing (56%).'],stages:[{n:'Application Review',ptr:0.98},{n:'Screening',ptr:0.67},{n:'Qualification Test',ptr:0.86},{n:'Arch Interview',ptr:0.42},{n:'Pair Programming',ptr:0.46},{n:'TA Interview',ptr:0.63},{n:'HM Interview',ptr:0.90},{n:'Debriefing',ptr:0.56},{n:'VET',ptr:0.80},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
+  {id:'co-ic6',country:'🇨🇴 Colombia',level:'IC6',warn:false,notes:['No Qualification Test for IC6.','Critical bottleneck: TA Interview at 4% PTR.'],stages:[{n:'Application Review',ptr:0.19},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.58},{n:'Take Home Exercise',ptr:0.97},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.04},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
+  {id:'ar-ic5',country:'🇦🇷 Argentina',level:'IC5',warn:false,notes:['Key bottlenecks: Arch Interview (30%) and Offer (63%).'],stages:[{n:'Application Review',ptr:0.47},{n:'Screening',ptr:0.65},{n:'Qualification Test',ptr:0.91},{n:'Arch Interview',ptr:0.30},{n:'Pair Programming',ptr:0.63},{n:'TA Interview',ptr:0.79},{n:'HM Interview',ptr:0.93},{n:'Debriefing',ptr:0.64},{n:'VET',ptr:0.89},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.63},{n:'Hired',ptr:null}]},
+  {id:'ar-ic6',country:'🇦🇷 Argentina',level:'IC6',warn:true,notes:['⚠️ No hires recorded yet. Projection only.'],stages:[{n:'Application Review',ptr:0.40},{n:'Screening',ptr:0.60},{n:'Arch Interview',ptr:0.15},{n:'Take Home Exercise',ptr:0.80},{n:'Pair Programming',ptr:0.38},{n:'TA Interview',ptr:1.00},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.50},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
+  {id:'mx-ic4',country:'🇲🇽 Mexico',level:'IC4',warn:false,notes:['IC4 skips Arch Interview.','Key bottleneck: TA Interview (29%).'],stages:[{n:'Application Review',ptr:0.99},{n:'Screening',ptr:0.72},{n:'Qualification Test',ptr:0.56},{n:'Pair Programming',ptr:0.45},{n:'TA Interview',ptr:0.29},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.88},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.71},{n:'Hired',ptr:null}]},
+  {id:'mx-ic5',country:'🇲🇽 Mexico',level:'IC5',warn:false,notes:['Multiple consecutive bottlenecks in early stages.'],stages:[{n:'Application Review',ptr:0.99},{n:'Screening',ptr:0.38},{n:'Qual Test / Tech S1',ptr:0.35},{n:'Arch Interview',ptr:0.60},{n:'Pair Programming',ptr:0.53},{n:'TA Interview',ptr:0.38},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.67},{n:'VET',ptr:1.00},{n:'Allocation',ptr:0.50},{n:'Offer',ptr:1.00},{n:'Hired',ptr:null}]},
+  {id:'mx-ic6',country:'🇲🇽 Mexico',level:'IC6',warn:false,notes:['Application Review at 8% PTR — sourcing volume is #1 lever.'],stages:[{n:'Application Review',ptr:0.08},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.45},{n:'Take Home Exercise',ptr:0.83},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.47},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.44},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
 ];
 
-const sourcingPlans = [
-  { id:'co-ic4', country:'🇨🇴 Colombia', level:'IC4', priority:'Medium', ratio:37, w:10, channels:['LinkedIn','Inbound'], note:'Healthy ratio. TA Interview is main bottleneck.' },
-  { id:'co-ic5', country:'🇨🇴 Colombia', level:'IC5', priority:'Medium', ratio:62, w:16, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy ratio — steady cadence recommended.' },
-  { id:'co-ic6', country:'🇨🇴 Colombia', level:'IC6', priority:'High', ratio:824, w:210, channels:['LinkedIn'], note:'High-volume sourcing required. TA Interview PTR critical.' },
-  { id:'ar-ic5', country:'🇦🇷 Argentina', level:'IC5', priority:'Medium', ratio:68, w:18, channels:['LinkedIn','Inbound','Referrals'], note:'Healthy — inbound and referrals can complement.' },
-  { id:'ar-ic6', country:'🇦🇷 Argentina', level:'IC6', priority:'Monitor', ratio:276, w:70, channels:['LinkedIn'], note:'Projection only — adjust once real hire data available.' },
-  { id:'mx-ic4', country:'🇲🇽 Mexico', level:'IC4', priority:'Medium', ratio:48, w:12, channels:['LinkedIn','Inbound'], note:'TA Interview at 29% is the main bottleneck.' },
-  { id:'mx-ic5', country:'🇲🇽 Mexico', level:'IC5', priority:'High', ratio:191, w:48, channels:['LinkedIn','Inbound'], note:'Monitor conversion at each tech stage closely.' },
-  { id:'mx-ic6', country:'🇲🇽 Mexico', level:'IC6', priority:'High', ratio:1098, w:275, channels:['LinkedIn'], note:'Sourcing volume is the #1 lever for this pipeline.' },
+const sourcingPlans=[
+  {id:'co-ic4',country:'🇨🇴 Colombia',level:'IC4',priority:'Medium',ratio:37,w:10,channels:['LinkedIn','Inbound'],note:'Healthy ratio. TA Interview is main bottleneck.'},
+  {id:'co-ic5',country:'🇨🇴 Colombia',level:'IC5',priority:'Medium',ratio:62,w:16,channels:['LinkedIn','Inbound','Referrals'],note:'Steady cadence recommended.'},
+  {id:'co-ic6',country:'🇨🇴 Colombia',level:'IC6',priority:'High',ratio:824,w:210,channels:['LinkedIn'],note:'High-volume sourcing. TA Interview PTR critical.'},
+  {id:'ar-ic5',country:'🇦🇷 Argentina',level:'IC5',priority:'Medium',ratio:68,w:18,channels:['LinkedIn','Inbound','Referrals'],note:'Inbound and referrals can complement sourcing.'},
+  {id:'ar-ic6',country:'🇦🇷 Argentina',level:'IC6',priority:'Monitor',ratio:276,w:70,channels:['LinkedIn'],note:'Projection only — adjust once real hire data available.'},
+  {id:'mx-ic4',country:'🇲🇽 Mexico',level:'IC4',priority:'Medium',ratio:48,w:12,channels:['LinkedIn','Inbound'],note:'TA Interview at 29% is main bottleneck.'},
+  {id:'mx-ic5',country:'🇲🇽 Mexico',level:'IC5',priority:'High',ratio:191,w:48,channels:['LinkedIn','Inbound'],note:'Monitor conversion at each tech stage.'},
+  {id:'mx-ic6',country:'🇲🇽 Mexico',level:'IC6',priority:'High',ratio:1098,w:275,channels:['LinkedIn'],note:'Sourcing volume is the #1 lever.'},
 ];
 
-function calcFunnel(stages) {
-  const n = stages.length;
-  let c = new Array(n).fill(0);
-  c[n-1] = 1;
-  for (let i = n-2; i >= 0; i--) c[i] = c[i+1] / stages[i].ptr;
-  return { counts: c.map(x => Math.ceil(x)), buffered: c.map(x => Math.ceil(x*(1+BUFFER))) };
+function calcFunnel(stages){
+  const n=stages.length;
+  let c=new Array(n).fill(0);
+  c[n-1]=1;
+  for(let i=n-2;i>=0;i--)c[i]=c[i+1]/stages[i].ptr;
+  return{counts:c.map(x=>Math.ceil(x)),buffered:c.map(x=>Math.ceil(x*(1+BUFFER)))};
 }
 
-function getBadStages(stages) {
-  return stages.filter(s => s.ptr !== null && s.ptr < 0.5).sort((a,b) => a.ptr - b.ptr);
-}
+function getBad(stages){return stages.filter(s=>s.ptr!==null&&s.ptr<0.5).sort((a,b)=>a.ptr-b.ptr);}
 
-function renderFunnels() {
-  const pl = pipelines.find(p => p.id === activePipeline);
-  const {counts, buffered} = calcFunnel(pl.stages);
-  const bad = getBadStages(pl.stages);
+function renderFunnels(){
+  const pl=pipelines.find(p=>p.id===activePipeline);
+  const{counts,buffered}=calcFunnel(pl.stages);
+  const bad=getBad(pl.stages);
+  const maxCount=counts[0];
 
-  // Group tabs by country
-  const groups = [
-    { label: '🇨🇴 Colombia', ids: ['co-ic4','co-ic5','co-ic6'] },
-    { label: '🇦🇷 Argentina', ids: ['ar-ic5','ar-ic6'] },
-    { label: '🇲🇽 Mexico', ids: ['mx-ic4','mx-ic5','mx-ic6'] },
-  ];
+  // Color scale for funnel
+  const stageColor=(ptr,isHire)=>{
+    if(isHire)return'#7C3AED';
+    if(ptr===null)return'#7C3AED';
+    if(ptr<0.2)return'#EF4444';
+    if(ptr<0.4)return'#F59E0B';
+    if(ptr<0.6)return'#A78BFA';
+    return'#7C3AED';
+  };
 
-  let tabsHtml = `<div class="pipeline-tabs">`;
-  groups.forEach(g => {
-    tabsHtml += `<span style="font-size:12px;color:#9CA3AF;align-self:center;margin-right:4px;">${g.label}</span>`;
-    g.ids.forEach(id => {
-      const p = pipelines.find(x => x.id === id);
-      if (!p) return;
-      tabsHtml += `<button class="ptab ${id===activePipeline?'active':''} ${p.warn?'warn':''}" onclick="setActivePipeline('${id}')">${p.level}${p.warn?' ⚠️':''}</button>`;
-    });
-    tabsHtml += `<span style="margin-right:12px;"></span>`;
+  // Funnel shape
+  let funnelHtml='<div class="funnel-shape">';
+  pl.stages.forEach((s,i)=>{
+    const isHire=i===pl.stages.length-1;
+    const pct=Math.max(20,Math.round((counts[i]/maxCount)*100));
+    const color=stageColor(s.ptr,isHire);
+    funnelHtml+=`<div class="funnel-stage" style="width:${pct}%;background:${color};padding:4px 8px;" title="${s.n}: ${counts[i]} candidates">
+      <span style="font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">${s.n} (${counts[i]})</span>
+    </div>`;
+    if(!isHire&&i<pl.stages.length-2){
+      const dropped=counts[i]-counts[i+1];
+      const dropPct=Math.round((dropped/counts[i])*100);
+      if(dropPct>20)funnelHtml+=`<div class="funnel-drop">↓ ${dropPct}% drop (${dropped} lost)</div>`;
+    }
   });
-  tabsHtml += `</div>`;
+  funnelHtml+='</div>';
+  funnelHtml+=`<div style="font-size:10px;color:#9CA3AF;margin-top:8px;text-align:center">
+    <span style="display:inline-block;width:10px;height:10px;background:#7C3AED;border-radius:2px;margin-right:4px"></span>Healthy
+    <span style="display:inline-block;width:10px;height:10px;background:#A78BFA;border-radius:2px;margin:0 4px 0 10px"></span>Watch
+    <span style="display:inline-block;width:10px;height:10px;background:#F59E0B;border-radius:2px;margin:0 4px 0 10px"></span>Warning
+    <span style="display:inline-block;width:10px;height:10px;background:#EF4444;border-radius:2px;margin:0 4px 0 10px"></span>Critical
+  </div>`;
 
-  document.getElementById('funnel-content').innerHTML = `
+  // Bar table
+  let barHtml='';
+  pl.stages.forEach((s,i)=>{
+    const isHire=i===pl.stages.length-1;
+    const isBad=s.ptr!==null&&s.ptr<0.5;
+    const ptrPct=s.ptr!==null?Math.round(s.ptr*100):100;
+    const color=stageColor(s.ptr,isHire);
+    barHtml+=`<div class="stage-bar-row">
+      <div class="stage-bar-name ${isHire?'hire':isBad?'bad':''}">${isHire?'🏁 ':isBad?'⚠️ ':''}${s.n}</div>
+      <div style="flex:1;display:flex;align-items:center;gap:8px">
+        <div class="stage-bar-track"><div class="stage-bar-fill" style="width:${s.ptr!==null?ptrPct:100}%;background:${color}"></div></div>
+        <span class="stage-bar-pct ${isBad?'bad':''}">${s.ptr!==null?ptrPct+'%':'—'}</span>
+        <span style="font-size:11px;color:#9CA3AF;width:60px">${counts[i]} cands</span>
+        <span style="font-size:11px;color:white;background:${color};padding:1px 7px;border-radius:10px;width:50px;text-align:center">${buffered[i]}+buf</span>
+      </div>
+    </div>`;
+  });
+
+  const groups=[
+    {label:'🇨🇴',ids:['co-ic4','co-ic5','co-ic6']},
+    {label:'🇦🇷',ids:['ar-ic5','ar-ic6']},
+    {label:'🇲🇽',ids:['mx-ic4','mx-ic5','mx-ic6']},
+  ];
+  let tabsHtml='<div class="ptabs">';
+  groups.forEach(g=>{
+    tabsHtml+=`<span class="country-label">${g.label}</span>`;
+    g.ids.forEach(id=>{
+      const p=pipelines.find(x=>x.id===id);
+      if(!p)return;
+      tabsHtml+=`<button class="ptab ${id===activePipeline?'active':''} ${p.warn?'warn':''}" onclick="setActivePipeline('${id}')">${p.level}${p.warn?' ⚠️':''}</button>`;
+    });
+    tabsHtml+=`<span style="margin-right:8px"></span>`;
+  });
+  tabsHtml+='</div>';
+
+  document.getElementById('funnel-content').innerHTML=`
     ${tabsHtml}
-    ${pl.warn ? `<div class="warning-banner">⚠️ <strong>Projection only — no hires recorded.</strong> Numbers below Debriefing use CO IC6 as reference.</div>` : ''}
+    ${pl.warn?`<div class="warn-banner">⚠️ <strong>Projection only — no hires recorded.</strong> Numbers are estimates based on CO IC6 as reference.</div>`:''}
     <div class="cards">
-      <div class="card card-purple"><div class="card-label">Top of Funnel (no buffer)</div><div class="card-number">${counts[0]}</div><div class="card-sub">candidates per hire</div></div>
-      <div class="card card-accent"><div class="card-label">Top of Funnel (25% buffer)</div><div class="card-number">${buffered[0]}</div><div class="card-sub">candidates per hire</div></div>
-      <div class="card card-light"><div class="card-label">Candidate-to-Hire Ratio</div><div class="card-number">${counts[0]}:1</div><div class="card-sub">${buffered[0]}:1 with buffer</div></div>
+      <div class="card cp"><div class="clabel">Top of Funnel</div><div class="cnum">${counts[0]}</div><div class="csub">candidates per hire</div></div>
+      <div class="card ca"><div class="clabel">With 25% buffer</div><div class="cnum">${buffered[0]}</div><div class="csub">candidates needed</div></div>
+      <div class="card cl"><div class="clabel">Candidate-to-Hire</div><div class="cnum">${counts[0]}:1</div><div class="csub">${buffered[0]}:1 with buffer</div></div>
     </div>
-    ${bad.length ? `<div class="bottleneck-bar">🚨 <strong>Key bottlenecks:</strong> ${bad.map(b=>`${b.n} (${Math.round(b.ptr*100)}%)`).join(' · ')}</div>` : ''}
-    <table>
-      <thead><tr><th>Stage</th><th>PTR</th><th>Candidates / 1 Hire</th><th>+25% Buffer</th></tr></thead>
-      <tbody>
-        ${pl.stages.map((s,i) => {
-          const isHire = i===pl.stages.length-1;
-          const isBad = s.ptr!==null && s.ptr<0.5;
-          return `<tr class="${isHire?'hire-row':isBad?'bottleneck-row':''}">
-            <td class="${isHire?'stage-hire':isBad?'stage-bad':''}">${isHire?'🏁 ':isBad?'⚠️ ':''}${s.n}</td>
-            <td class="${isBad?'ptr-bad':'ptr-ok'}">${s.ptr!==null?Math.round(s.ptr*100)+'%':'—'}</td>
-            <td class="td-count">${counts[i]}</td>
-            <td class="${isHire?'td-buffer-hire':'td-buffer'}">${buffered[i]}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
+    ${bad.length?`<div class="bneck">🚨 <strong>Key bottlenecks — drop happens INSIDE these stages:</strong> ${bad.map(b=>`<strong>${b.n}</strong> only ${Math.round(b.ptr*100)}% pass`).join(' · ')}</div>`:''}
+    <div class="funnel-wrap">
+      <div class="funnel-visual">
+        <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:12px">📊 Funnel Shape — wider = more candidates</div>
+        ${funnelHtml}
+      </div>
+      <div class="funnel-table-wrap">${barHtml}</div>
+    </div>
     <div class="notes">${pl.notes.map(n=>`<div>${n}</div>`).join('')}</div>`;
 }
 
-function renderSourcing() {
-  const total = sourcingPlans.reduce((s,p)=>s+p.w,0);
-  const h = sourcingPlans.filter(p=>p.priority==='High').reduce((s,p)=>s+p.w,0);
-  const m = sourcingPlans.filter(p=>p.priority==='Medium').reduce((s,p)=>s+p.w,0);
-  const mo = sourcingPlans.filter(p=>p.priority==='Monitor').reduce((s,p)=>s+p.w,0);
-  const pMap = {'High':'p1','Medium':'p2','Monitor':'p3'};
-  const pLabel = {'High':'🔴 High','Medium':'🟡 Medium','Monitor':'🟢 Monitor'};
-  const card = s => `
-    <div class="sourcing-card">
-      <div class="sourcing-info">
-        <h4>${s.country} — ${s.level} <span class="priority-badge ${pMap[s.priority]}">${pLabel[s.priority]}</span></h4>
+function renderSourcing(){
+  // Get this week's actual outreaches from GH_Raw via monthlyData
+  const now=new Date();
+  const thisMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const total=sourcingPlans.reduce((s,p)=>s+p.w,0);
+  const h=sourcingPlans.filter(p=>p.priority==='High').reduce((s,p)=>s+p.w,0);
+  const m=sourcingPlans.filter(p=>p.priority==='Medium').reduce((s,p)=>s+p.w,0);
+  const mo=sourcingPlans.filter(p=>p.priority==='Monitor').reduce((s,p)=>s+p.w,0);
+  const pMap={'High':'p1','Medium':'p2','Monitor':'p3'};
+  const pLabel={'High':'🔴 High','Medium':'🟡 Medium','Monitor':'🟢 Monitor'};
+
+  const card=s=>{
+    // Actual this month from monthly tracking
+    const actual=monthlyData.filter(d=>d.month===thisMonth&&d.pipeline===`${s.country.split(' ')[0]==='🇨🇴'?'CO':s.country.split(' ')[0]==='🇦🇷'?'AR':'MX'} - ${s.level}`&&d.stage==='Application Review').reduce((sum,d)=>sum+parseInt(d.candidates||0),0);
+    const weekTarget=s.w;
+    const monthTarget=s.w*4;
+    const pct=Math.min(100,Math.round((actual/monthTarget)*100));
+    const fillClass=pct>=100?'over':pct>=50?'':'warn';
+    return`<div class="scard">
+      <div class="sinfo" style="flex:1">
+        <h4>${s.country} — ${s.level} <span class="pbadge ${pMap[s.priority]}">${pLabel[s.priority]}</span></h4>
         <p>${s.note}</p>
-        <div class="channel-tags">${s.channels.map(c=>`<span class="channel-tag">${c}</span>`).join('')}</div>
+        <div class="ctags">${s.channels.map(c=>`<span class="ctag">${c}</span>`).join('')}</div>
+        ${actual>0?`<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280"><span>This month: ${actual} candidates entered</span><span>${pct}% of target</span></div><div class="live-bar"><div class="live-fill ${fillClass}" style="width:${pct}%"></div></div></div>`:''}
       </div>
-      <div style="display:flex;gap:16px;">
-        <div class="s-metric"><div class="s-metric-num">${s.w}</div><div class="s-metric-label">outreaches/week</div></div>
-        <div class="s-metric"><div class="s-metric-num">${s.ratio}:1</div><div class="s-metric-label">ratio</div></div>
+      <div style="display:flex;gap:14px;flex-shrink:0">
+        <div class="sm"><div class="smn">${weekTarget}</div><div class="sml">target/week</div></div>
+        <div class="sm"><div class="smn">${s.ratio}:1</div><div class="sml">ratio</div></div>
       </div>
     </div>`;
-  document.getElementById('sourcing-content').innerHTML = `
-    <div class="sourcing-total-bar">
-      <div><div class="label">Total weekly outreaches needed</div><div class="big">${total.toLocaleString()}</div><div class="label">outreaches / week across all pipelines</div></div>
-      <div class="sourcing-breakdown">
-        <div><div class="num">${h}</div><div class="lbl">🔴 High</div></div>
-        <div><div class="num">${m}</div><div class="lbl">🟡 Medium</div></div>
-        <div><div class="num">${mo}</div><div class="lbl">🟢 Monitor</div></div>
+  };
+
+  document.getElementById('sourcing-content').innerHTML=`
+    <div class="stotal">
+      <div><div class="lbl">Total weekly outreaches needed</div><div class="big">${total.toLocaleString()}</div><div class="lbl">across all active pipelines</div></div>
+      <div class="sbd">
+        <div><div class="n">${h}</div><div class="l">🔴 High</div></div>
+        <div><div class="n">${m}</div><div class="l">🟡 Medium</div></div>
+        <div><div class="n">${mo}</div><div class="l">🟢 Monitor</div></div>
       </div>
     </div>
-    <div class="section-title">🔴 High Priority</div>
-    ${sourcingPlans.filter(p=>p.priority==='High').map(card).join('')}
-    <div class="section-title">🟡 Medium Priority</div>
-    ${sourcingPlans.filter(p=>p.priority==='Medium').map(card).join('')}
-    <div class="section-title">🟢 Monitor</div>
-    ${sourcingPlans.filter(p=>p.priority==='Monitor').map(card).join('')}`;
+    <div class="sec">🔴 High Priority</div>${sourcingPlans.filter(p=>p.priority==='High').map(card).join('')}
+    <div class="sec">🟡 Medium Priority</div>${sourcingPlans.filter(p=>p.priority==='Medium').map(card).join('')}
+    <div class="sec">🟢 Monitor</div>${sourcingPlans.filter(p=>p.priority==='Monitor').map(card).join('')}`;
 }
 
-function renderPositions() {
-  if (!openPositions.length) {
-    document.getElementById('positions-content').innerHTML = `<div style="background:white;border-radius:10px;padding:20px;font-size:13px;color:#9CA3AF;">No open positions found. Make sure Xavier_Raw is populated in your Google Sheet.</div>`;
+function renderPositions(){
+  if(!openPositions.length){
+    document.getElementById('positions-content').innerHTML=`<div style="background:white;border-radius:10px;padding:20px;font-size:13px;color:#9CA3AF;">No data found. Make sure Xavier_Raw is populated.</div>`;
     return;
   }
-  const statusClass = s => {
-    const m = {'Approved':'approved','Open':'open','Pending':'pending','Hold':'hold','Hired':'hired','Offer':'offer'};
-    return m[s] || 'open';
+
+  const open=openPositions.filter(p=>p.opening_status==='Open');
+  const approved=openPositions.filter(p=>p.opening_status==='Approved');
+  const pending=openPositions.filter(p=>p.opening_status==='Pending');
+  const hold=openPositions.filter(p=>p.opening_status==='Hold');
+  const offer=openPositions.filter(p=>p.opening_status==='Offer');
+  const hired=openPositions.filter(p=>p.opening_status==='Hired');
+
+  // Summary by pipeline
+  const pipeSummary={};
+  [...open,...approved,...pending].forEach(p=>{
+    const key=`${p.country} ${p.level}`;
+    if(!pipeSummary[key])pipeSummary[key]={count:0,totalDays:0};
+    pipeSummary[key].count++;
+    pipeSummary[key].totalDays+=parseInt(p.days_open)||0;
+  });
+
+  const summaryCards=Object.entries(pipeSummary).map(([k,v])=>`
+    <div class="pos-sum-card">
+      <div class="pos-sum-num">${v.count}</div>
+      <div class="pos-sum-label">${k}</div>
+      <div class="pos-sum-sub">avg ${Math.round(v.totalDays/v.count)} days open</div>
+    </div>`).join('');
+
+  const posCard=p=>{
+    const days=parseInt(p.days_open)||0;
+    const cls=days>60?'urgent':days>30?'med':'';
+    return`<div class="pos-card ${cls}">
+      <div>
+        <div class="pos-title">${p.job_title||'Open Role'}</div>
+        <div class="pos-meta">${p.country||''} · ${p.level||''} · ${p.job_opening_id||''}</div>
+      </div>
+      <div style="text-align:center">
+        <div class="pos-days" style="color:${days>60?'#EF4444':days>30?'#F59E0B':'#7C3AED'}">${days}</div>
+        <div class="pos-days-lbl">days</div>
+      </div>
+    </div>`;
   };
-  const groups = ['Approved','Open','Pending','Hold','Offer','Hired'];
-  let html = '';
-  groups.forEach(status => {
-    const items = openPositions.filter(p => p.opening_status === status);
-    if (!items.length) return;
-    html += `<div class="section-title">${status === 'Approved' ? '✅' : status === 'Hold' ? '⏸️' : status === 'Pending' ? '⏳' : status === 'Hired' ? '🎉' : status === 'Offer' ? '📋' : '🔵'} ${status} (${items.length})</div>`;
-    items.forEach(p => {
-      const days = p.days_open || '—';
-      const isLong = parseInt(days) > 60;
-      html += `<div class="pos-card ${isLong?'high':''}">
-        <div>
-          <div class="pos-title">${p.job_title || 'Open Role'} <span class="status-pill status-${statusClass(status)}">${status}</span></div>
-          <div class="pos-meta">${p.country || ''} · ${p.level || ''} · ID: ${p.job_opening_id || ''}</div>
-        </div>
-        <div style="text-align:center">
-          <div class="pos-days" style="color:${isLong?'#DC2626':'#7C3AED'}">${days}</div>
-          <div class="pos-days-label">days open</div>
+
+  const collapsible=(title,items,emoji)=>`
+    <div class="collapsible">
+      <div class="collapsible-header" onclick="toggleCollapse(this)">
+        <span>${emoji} ${title} <span style="background:#EDE9FE;color:#7C3AED;border-radius:10px;padding:1px 8px;font-size:11px;margin-left:6px">${items.length}</span></span>
+        <span>▼</span>
+      </div>
+      <div class="collapsible-body">${items.map(posCard).join('')}</div>
+    </div>`;
+
+  document.getElementById('positions-content').innerHTML=`
+    <div class="sec">📊 Summary by Pipeline</div>
+    <div class="pos-summary">${summaryCards}</div>
+    <div class="sec">🟢 Actively Managed — Open (${open.length})</div>
+    ${open.length?open.map(posCard).join(''):`<div style="color:#9CA3AF;font-size:13px;padding:12px">No open positions actively managed.</div>`}
+    ${collapsible('Approved — not yet activated',approved,'🟡')}
+    ${collapsible('Pending approval',pending,'⏳')}
+    ${hold.length?collapsible('On Hold',hold,'⏸️'):''}
+    ${collapsible('Offer stage',offer,'📋')}
+    ${collapsible('Hired — closed',hired,'🎉')}`;
+}
+
+function toggleCollapse(el){
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+  el.querySelector('span:last-child').textContent=body.classList.contains('open')?'▲':'▼';
+}
+
+function renderKPIs(){
+  if(!monthlyData.length){
+    document.getElementById('kpis-content').innerHTML=`<div style="background:white;border-radius:10px;padding:20px;font-size:13px;color:#9CA3AF;">No data yet. Data will accumulate from March 2026 onwards.</div>`;
+    return;
+  }
+  const sel=document.getElementById('f-pipeline').value;
+  let filtered=sel==='all'?monthlyData:monthlyData.filter(d=>d.pipeline===sel);
+  const months=[...new Set(filtered.map(d=>d.month))].sort();
+
+  const sum=(m,stage)=>filtered.filter(d=>d.month===m&&d.stage===stage).reduce((s,d)=>s+parseInt(d.candidates||0),0);
+  const techStages=['Qualification Test','Technical Stage 1','Technical Stage 2','Technical Stage 3','Arch Interview','Pair Programming'];
+  const techSum=m=>filtered.filter(d=>d.month===m&&techStages.includes(d.stage)).reduce((s,d)=>s+parseInt(d.candidates||0),0);
+
+  const topFunnel=months.map(m=>sum(m,'Application Review'));
+  const tech=months.map(m=>techSum(m));
+  const hires=months.map(m=>sum(m,'Hired'));
+  const offers=months.map(m=>sum(m,'Offer'));
+
+  ['c1','c2','c3','c4'].forEach(id=>{const el=document.getElementById(id);if(el){const c=Chart.getChart(el);if(c)c.destroy();}});
+
+  document.getElementById('kpis-content').innerHTML=`
+    <div class="charts-grid">
+      <div class="chart-box"><div class="chart-title">📥 Top of Funnel — New Candidates/Month</div><canvas id="c1"></canvas></div>
+      <div class="chart-box"><div class="chart-title">⚙️ Active in Technical Stages</div><canvas id="c2"></canvas></div>
+      <div class="chart-box"><div class="chart-title">🏁 Hires vs Target (3/month)</div><canvas id="c3"></canvas></div>
+      <div class="chart-box"><div class="chart-title">📋 Offers Extended</div><canvas id="c4"></canvas></div>
+    </div>`;
+
+  const opts={responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}};
+  const optsLegend={...opts,plugins:{legend:{display:true}}};
+  new Chart(document.getElementById('c1'),{type:'bar',data:{labels:months,datasets:[{label:'Candidates',data:topFunnel,backgroundColor:'#A78BFA',borderRadius:6}]},options:opts});
+  new Chart(document.getElementById('c2'),{type:'bar',data:{labels:months,datasets:[{label:'In Tech',data:tech,backgroundColor:'#7C3AED',borderRadius:6}]},options:opts});
+  new Chart(document.getElementById('c3'),{type:'bar',data:{labels:months,datasets:[{label:'Hires',data:hires,backgroundColor:'#10B981',borderRadius:6},{label:'Target',data:months.map(()=>3),type:'line',borderColor:'#F59E0B',borderDash:[5,5],pointRadius:0,fill:false,borderWidth:2}]},options:optsLegend});
+  new Chart(document.getElementById('c4'),{type:'bar',data:{labels:months,datasets:[{label:'Offers',data:offers,backgroundColor:'#F59E0B',borderRadius:6}]},options:opts});
+}
+
+function renderFocus(){
+  const criticalPipelines=pipelines.filter(p=>!p.warn&&getBad(p.stages).some(s=>s.ptr<0.15));
+  const highRatio=pipelines.filter(p=>!p.warn&&calcFunnel(p.stages).counts[0]>500);
+  const longOpen=openPositions.filter(p=>p.opening_status==='Open'&&parseInt(p.days_open)>30);
+  const activeOpen=openPositions.filter(p=>p.opening_status==='Open');
+
+  const allItems=[
+    ...highRatio.map(p=>({id:`src-${p.id}`,section:'🔴 Sourcing — Critical this week',title:`Hit outreach target for ${p.country.split(' ')[0]} ${p.level}`,desc:`${calcFunnel(p.stages).counts[0]}:1 ratio — needs high volume. Weekly target: ${sourcingPlans.find(s=>s.id===p.id)?.w||'?'} outreaches.`,tag:'critical'})),
+    ...pipelines.filter(p=>!p.warn&&calcFunnel(p.stages).counts[0]<=500).map(p=>({id:`src2-${p.id}`,section:'🟡 Sourcing — Keep cadence',title:`Maintain outreach for ${p.country.split(' ')[0]} ${p.level}`,desc:`Weekly target: ${sourcingPlans.find(s=>s.id===p.id)?.w||'?'} outreaches. Ratio: ${calcFunnel(p.stages).counts[0]}:1`,tag:'weekly'})),
+    ...criticalPipelines.map(p=>{const bad=getBad(p.stages).filter(s=>s.ptr<0.15);return{id:`bn-${p.id}`,section:'⚙️ Pipeline Health',title:`Review bottleneck in ${p.country.split(' ')[0]} ${p.level}`,desc:`${bad.map(b=>`${b.n} at ${Math.round(b.ptr*100)}%`).join(', ')} — check interviewer calibration`,tag:'critical'};}),
+    ...pipelines.filter(p=>!p.warn&&getBad(p.stages).some(s=>s.ptr>=0.15&&s.ptr<0.35)).map(p=>{const bad=getBad(p.stages).filter(s=>s.ptr>=0.15&&s.ptr<0.35);return{id:`bn2-${p.id}`,section:'⚙️ Pipeline Health',title:`Monitor conversion in ${p.country.split(' ')[0]} ${p.level}`,desc:`Watch: ${bad.map(b=>`${b.n} (${Math.round(b.ptr*100)}%)`).join(', ')}`,tag:'weekly'};}),
+    ...longOpen.map(p=>({id:`pos-${p.job_opening_id}`,section:'📋 Open Positions',title:`Follow up on ${p.country} ${p.level} — ${p.days_open} days open`,desc:`Position actively managed but open for over 30 days. Check pipeline activity.`,tag:'critical'})),
+    {id:'monthly-ptr',section:'📊 Monthly Review',title:'Update PTR data if 10+ new candidates per stage',desc:'Pull latest Greenhouse report and compare PTRs to baseline.',tag:'monthly'},
+    {id:'monthly-track',section:'📊 Monthly Review',title:'Review hires vs target (3/month)',desc:'Check KPIs tab — are we on track? Adjust sourcing priorities if needed.',tag:'monthly'},
+    {id:'monthly-source',section:'📊 Monthly Review',title:'Review source mix this month',desc:'What % came from LinkedIn vs inbound vs referrals? Any shifts?',tag:'monthly'},
+    {id:'monthly-ar6',section:'📊 Monthly Review',title:'Check AR IC6 pipeline',desc:'No hires recorded yet — any progress? Update PTR data once first hire closes.',tag:'monthly'},
+  ];
+
+  // Group by section
+  const sections={};
+  allItems.forEach(item=>{
+    if(!sections[item.section])sections[item.section]=[];
+    sections[item.section].push(item);
+  });
+
+  const totalItems=allItems.length;
+  const doneItems=Object.keys(checkStates).filter(k=>checkStates[k]).length;
+  const pct=Math.round((doneItems/totalItems)*100)||0;
+
+  let html=`
+    <div class="week-header">
+      <h3>Week of ${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</h3>
+      <p>${doneItems} of ${totalItems} tasks completed</p>
+      <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+
+  Object.entries(sections).forEach(([sec,items])=>{
+    const done=items.filter(i=>checkStates[i.id]).length;
+    html+=`<div class="checklist-section">
+      <div class="cl-section-header"><span>${sec}</span><span style="font-size:11px;color:#9CA3AF">${done}/${items.length}</span></div>`;
+    items.forEach(item=>{
+      const isDone=checkStates[item.id]||false;
+      const tagClass=item.tag==='critical'?'tag-critical':item.tag==='monthly'?'tag-monthly':'tag-weekly';
+      const tagLabel=item.tag==='critical'?'Critical':item.tag==='monthly'?'Monthly':'Weekly';
+      html+=`<div class="cl-item ${isDone?'done':''}" onclick="toggleCheck('${item.id}')">
+        <div class="cl-checkbox"><span class="cl-check-mark">✓</span></div>
+        <div class="cl-text">
+          <div class="cl-title">${item.title}<span class="cl-tag ${tagClass}">${tagLabel}</span></div>
+          <div class="cl-desc">${item.desc}</div>
         </div>
       </div>`;
     });
+    html+='</div>';
   });
-  document.getElementById('positions-content').innerHTML = html;
+
+  document.getElementById('focus-content').innerHTML=html;
+  document.getElementById('badge').textContent=allItems.filter(i=>i.tag==='critical'&&!checkStates[i.id]).length||'✓';
 }
 
-function renderKPIs() {
-  if (!monthlyData.length) {
-    document.getElementById('kpis-content').innerHTML = `<div style="background:white;border-radius:10px;padding:20px;font-size:13px;color:#9CA3AF;">No data found in Monthly_Tracking. Make sure GH_Raw is populated.</div>`;
-    return;
-  }
-  const selPipeline = document.getElementById('kpi-pipeline').value;
-  const selCountry = document.getElementById('kpi-country').value;
-
-  let filtered = monthlyData;
-  if (selPipeline !== 'all') filtered = filtered.filter(d => d.pipeline === selPipeline);
-  if (selCountry !== 'all') filtered = filtered.filter(d => d.country === selCountry);
-
-  // Get unique months sorted
-  const months = [...new Set(filtered.map(d => d.month))].sort();
-
-  // Candidates at App Review per month (top of funnel)
-  const topFunnel = months.map(m => {
-    const rows = filtered.filter(d => d.month === m && d.stage === 'Application Review');
-    return rows.reduce((s,r) => s + (parseInt(r.candidates)||0), 0);
-  });
-
-  // Active in technical stages per month
-  const techStages = ['Qualification Test','Technical Stage 1','Technical Stage 2','Technical Stage 3','Arch Interview','Pair Programming'];
-  const techActive = months.map(m => {
-    const rows = filtered.filter(d => d.month === m && techStages.includes(d.stage));
-    return rows.reduce((s,r) => s + (parseInt(r.candidates)||0), 0);
-  });
-
-  // Hires per month
-  const hires = months.map(m => {
-    const rows = filtered.filter(d => d.month === m && d.stage === 'Hired');
-    return rows.reduce((s,r) => s + (parseInt(r.candidates)||0), 0);
-  });
-
-  // Offers per month
-  const offers = months.map(m => {
-    const rows = filtered.filter(d => d.month === m && d.stage === 'Offer');
-    return rows.reduce((s,r) => s + (parseInt(r.candidates)||0), 0);
-  });
-
-  const purple = '#7C3AED', accent = '#A78BFA', green = '#10B981', orange = '#F59E0B';
-
-  // Destroy existing charts
-  ['chart-topfunnel','chart-tech','chart-hires','chart-offers'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { const c = Chart.getChart(el); if (c) c.destroy(); }
-  });
-
-  document.getElementById('kpis-content').innerHTML = `
-    <div class="charts-grid">
-      <div class="chart-container"><div class="chart-title">📥 Top of Funnel — Candidates per Month</div><canvas id="chart-topfunnel"></canvas></div>
-      <div class="chart-container"><div class="chart-title">⚙️ Active in Technical Stages</div><canvas id="chart-tech"></canvas></div>
-      <div class="chart-container"><div class="chart-title">🏁 Hires per Month vs Target (3)</div><canvas id="chart-hires"></canvas></div>
-      <div class="chart-container"><div class="chart-title">📋 Offers Extended per Month</div><canvas id="chart-offers"></canvas></div>
-    </div>`;
-
-  const cfg = (labels, datasets, type='bar') => ({ type, data: { labels, datasets }, options: { responsive: true, plugins: { legend: { display: datasets.length > 1 } }, scales: { y: { beginAtZero: true } } } });
-
-  new Chart(document.getElementById('chart-topfunnel'), cfg(months, [{ label:'Candidates', data: topFunnel, backgroundColor: accent, borderRadius: 6 }]));
-  new Chart(document.getElementById('chart-tech'), cfg(months, [{ label:'In Tech Stages', data: techActive, backgroundColor: purple, borderRadius: 6 }]));
-  new Chart(document.getElementById('chart-hires'), cfg(months, [
-    { label:'Hires', data: hires, backgroundColor: green, borderRadius: 6 },
-    { label:'Target', data: months.map(()=>3), type:'line', borderColor: orange, borderDash:[5,5], pointRadius:0, fill:false }
-  ]));
-  new Chart(document.getElementById('chart-offers'), cfg(months, [{ label:'Offers', data: offers, backgroundColor: '#F59E0B', borderRadius: 6 }]));
+function toggleCheck(id){
+  checkStates[id]=!checkStates[id];
+  renderFocus();
 }
 
-function renderAlerts() {
-  const alerts = [];
-  let critCount = 0;
-  pipelines.forEach(pl => {
-    const bad = getBadStages(pl.stages);
-    const {counts} = calcFunnel(pl.stages);
-    const label = `${pl.country.split(' ')[0]} ${pl.level}`;
-    bad.filter(s=>s.ptr<0.15).forEach(s => {
-      critCount++;
-      alerts.push({type:'critical',icon:'🚨',title:`${label} — ${s.n} at ${Math.round(s.ptr*100)}% PTR`,body:`Extreme bottleneck. Only ${Math.round(s.ptr*100)} out of 100 candidates pass this stage.`,action:`Review evaluation criteria and interviewer calibration for ${s.n}.`});
-    });
-    if (counts[0] > 500 && !pl.warn) {
-      critCount++;
-      alerts.push({type:'critical',icon:'📊',title:`${label} — ${counts[0]}:1 ratio requires massive sourcing`,body:`You need ${counts[0]} candidates per hire (${Math.ceil(counts[0]*1.25)} with buffer). Dedicated high-volume sourcing required.`,action:`Prioritize LinkedIn outbound for ${label} exclusively.`});
-    }
-    bad.filter(s=>s.ptr>=0.15&&s.ptr<0.35).forEach(s => {
-      alerts.push({type:'warning',icon:'⚠️',title:`${label} — ${s.n} at ${Math.round(s.ptr*100)}% PTR`,body:`Significant drop-off. Review whether evaluation criteria is calibrated correctly.`,action:`Audit last 10 candidates who failed ${s.n} in ${label}.`});
-    });
-    if (pl.warn) alerts.push({type:'warning',icon:'🔮',title:`${label} — No hires recorded yet`,body:`Funnel is a projection. Numbers could shift once real hires are recorded.`,action:`Prioritize closing first hire in ${label} to establish baseline.`});
-  });
-  openPositions.filter(p=>parseInt(p.days_open)>60).forEach(p => {
-    critCount++;
-    alerts.push({type:'critical',icon:'📅',title:`${p.country} ${p.level} — Open for ${p.days_open} days`,body:`Position open for over 60 days. Review pipeline activity.`,action:`Check active candidates and ensure outreach targets are being met.`});
-  });
-  const healthy = pipelines.filter(pl=>!pl.warn&&getBadStages(pl.stages).filter(s=>s.ptr<0.35).length===0);
-  if (healthy.length) alerts.push({type:'ok',icon:'✅',title:`Pipelines looking healthy`,body:`${healthy.map(p=>`${p.country.split(' ')[0]} ${p.level}`).join(', ')} — no extreme bottlenecks.`,action:`Maintain current sourcing cadence.`});
-  document.getElementById('alert-count').textContent = critCount > 0 ? critCount : '✓';
-  const focus = [...pipelines].filter(p=>!p.warn).sort((a,b)=>calcFunnel(b.stages).counts[0]-calcFunnel(a.stages).counts[0]).slice(0,3);
-  document.getElementById('alerts-content').innerHTML = `
-    <div class="focus-score"><h3>🎯 Focus your sourcing energy here first:</h3>${focus.map(p=>`<span class="focus-pipeline">${p.country.split(' ')[0]} ${p.level} (${calcFunnel(p.stages).counts[0]}:1)</span>`).join('')}</div>
-    ${alerts.map(a=>`<div class="alert-card alert-${a.type}"><div class="alert-icon">${a.icon}</div><div><div class="alert-title">${a.title}</div><div class="alert-body">${a.body}</div><div class="alert-action">→ ${a.action}</div></div></div>`).join('')}`;
-}
+function setActivePipeline(id){activePipeline=id;renderFunnels();}
 
-function setActivePipeline(id) { activePipeline = id; renderFunnels(); }
-function showPage(id, el) {
+function showPage(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
-  if (id === 'kpis') renderKPIs();
+  if(id==='kpis')renderKPIs();
+  if(id==='focus')renderFocus();
 }
 
-async function loadSheet(name) {
-  try {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
-    const res = await fetch(url);
-    const text = await res.text();
-    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
+async function loadSheet(name){
+  try{
+    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(name)}`;
+    const res=await fetch(url);
+    const text=await res.text();
+    const json=JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
     return json.table;
-  } catch(e) { return null; }
+  }catch(e){return null;}
 }
 
-async function loadData() {
-  document.getElementById('funnel-updated').textContent = 'Refreshing...';
+async function loadData(){
+  document.getElementById('updated').textContent='Refreshing...';
 
-  // PTR Data
-  const ptrTable = await loadSheet('PTR_Data');
-  if (ptrTable?.rows?.length > 1) {
-    const updates = {};
-    ptrTable.rows.forEach(row => {
-      if (!row.c[0]?.v) return;
-      const id = row.c[0].v.toString().trim();
-      const stage = row.c[1]?.v;
-      const ptr = parseFloat(row.c[2]?.v);
-      if (!updates[id]) updates[id] = [];
-      if (stage && !isNaN(ptr)) updates[id].push({n:stage,ptr});
+  // PTR
+  const ptrT=await loadSheet('PTR_Data');
+  if(ptrT?.rows?.length>1){
+    const upd={};
+    ptrT.rows.forEach(r=>{
+      if(!r.c[0]?.v)return;
+      const id=r.c[0].v.toString().trim();
+      const stage=r.c[1]?.v;
+      const ptr=parseFloat(r.c[2]?.v);
+      if(!upd[id])upd[id]=[];
+      if(stage&&!isNaN(ptr))upd[id].push({n:stage,ptr});
     });
-    pipelines = defaultPipelines.map(p => updates[p.id]?.length ? {...p, stages:[...updates[p.id],{n:'Hired',ptr:null}]} : p);
-  } else {
-    pipelines = defaultPipelines;
-  }
+    pipelines=defaultPipelines.map(p=>upd[p.id]?.length?{...p,stages:[...upd[p.id],{n:'Hired',ptr:null}]}:p);
+  }else{pipelines=defaultPipelines;}
 
   // Open Positions
-  const posTable = await loadSheet('Open_Positions');
-  if (posTable?.rows?.length > 1) {
-    const cols = posTable.cols.map(c => c.label?.toLowerCase().replace(/ /g,'_').replace(/[()]/g,'') || '');
-    openPositions = posTable.rows.slice(1).filter(row => row.c[0]?.v).map(row => {
-      const obj = {};
-      cols.forEach((col,i) => { obj[col] = row.c[i]?.v?.toString() || ''; });
-      return obj;
+  const posT=await loadSheet('Open_Positions_Static');
+  if(posT?.rows?.length>1){
+    const cols=posT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_').replace(/[()]/g,'')||'');
+    openPositions=posT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
+      const o={};
+      cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString()||'';});
+      return o;
     });
   }
 
   // Monthly Tracking
-  const mtTable = await loadSheet('Monthly_Tracking');
-  if (mtTable?.rows?.length > 1) {
-    const cols = mtTable.cols.map(c => c.label?.toLowerCase().replace(/ /g,'_') || '');
-    monthlyData = mtTable.rows.slice(1).filter(row => row.c[0]?.v).map(row => {
-      const obj = {};
-      cols.forEach((col,i) => { obj[col] = row.c[i]?.v?.toString() || ''; });
-      return { month: obj.month, pipeline: obj.pipeline_id, country: obj.country, level: obj.level, stage: obj.stage, candidates: obj.candidates || '0' };
+  const mtT=await loadSheet('Monthly_Tracking_Static');
+  if(mtT?.rows?.length>1){
+    const cols=mtT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
+    monthlyData=mtT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
+      const o={};
+      cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString()||'';});
+      return{month:o.month,pipeline:o.pipeline_id,country:o.country,level:o.level,stage:o.stage,candidates:o.candidates||'0'};
     });
   }
 
-  document.getElementById('funnel-updated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+  document.getElementById('updated').textContent=`Updated: ${new Date().toLocaleString()}`;
   renderFunnels();
   renderSourcing();
   renderPositions();
-  renderAlerts();
+  renderFocus();
 }
 
 loadData();
