@@ -382,7 +382,7 @@ function renderPositions(){
 
   // Summary by pipeline
   const pipeSummary={};
-  [...open,...approved,...pending].forEach(p=>{
+  [...open].forEach(p=>{
     const key=`${p.country} ${p.level}`;
     if(!pipeSummary[key])pipeSummary[key]={count:0,totalDays:0};
     pipeSummary[key].count++;
@@ -592,10 +592,10 @@ async function loadData(){
   const mtT=await loadSheet('Monthly_Tracking_Static');
   if(mtT?.rows?.length>1){
     const cols=mtT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
-    monthlyData=mtT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
+    monthlyData=mtT.rows.slice(2).filter(r=>r.c[0]?.v).map(r=>{
       const o={};
-      cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString()||'';});
-      return{month:o.month,pipeline:o.pipeline_id,country:o.country,level:o.level,stage:o.stage,candidates:o.candidates||'0'};
+      cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString().trim()||'';});
+      return{month:o.month?.trim(),pipeline:o.pipeline_id?.trim(),country:o.country?.trim(),level:o.level?.trim(),stage:o.stage?.trim(),candidates:o.candidates||o['']||'0'};
     });
   }
 
