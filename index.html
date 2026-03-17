@@ -300,7 +300,7 @@ function renderFunnels(){
 }
 
 function renderSourcing(){
-  const plans=(sourcingPlans.length?sourcingPlans:defaultSourcing).filter(p=>p.status!=='No open positions');
+  const plans=(sourcingPlans.length?sourcingPlans:defaultSourcing).filter(p=>p.status?.toLowerCase()!=='no open positions');
   const total=plans.reduce((s,p)=>s+p.w,0);
   const h=plans.filter(p=>p.priority==='High').reduce((s,p)=>s+p.w,0);
   const m=plans.filter(p=>p.priority==='Medium').reduce((s,p)=>s+p.w,0);
