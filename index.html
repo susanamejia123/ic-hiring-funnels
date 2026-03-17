@@ -139,7 +139,7 @@ h2{color:#7C3AED;font-size:19px;margin-bottom:3px}
 
 <div id="sourcing" class="page">
   <h2>Sourcing Plan</h2>
-  <p class="sub">Weekly outreach targets · 3 hires/month goal · Live from Google Sheets</p>
+  <p class="sub">Weekly outreach targets · Auto-calculated from funnel · 3 hires/month goal + 25% buffer</p>
   <div id="sourcing-content"></div>
 </div>
 
@@ -178,6 +178,7 @@ h2{color:#7C3AED;font-size:19px;margin-bottom:3px}
 const SHEET_ID='1AFodztA1GiCsAA7FFtR2J_wL8pl9iszxkE_XdtxbB4k';
 const BUFFER=0.25;
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const TARGET_HIRES=3;
 let activePipeline='co-ic5';
 let pipelines=[];
 let openPositions=[];
@@ -196,17 +197,6 @@ const defaultPipelines=[
   {id:'mx-ic6',country:'🇲🇽 Mexico',level:'IC6',warn:false,notes:['Application Review at 8% PTR — sourcing volume is #1 lever.'],stages:[{n:'Application Review',ptr:0.08},{n:'Screening',ptr:0.73},{n:'Arch Interview',ptr:0.45},{n:'Take Home Exercise',ptr:0.83},{n:'Pair Programming',ptr:0.76},{n:'TA Interview',ptr:0.47},{n:'HM Interview',ptr:1.00},{n:'Debriefing',ptr:0.44},{n:'VET',ptr:1.00},{n:'Allocation',ptr:1.00},{n:'Offer',ptr:0.75},{n:'Hired',ptr:null}]},
 ];
 
-const defaultSourcing=[
-  {id:'co-ic4',country:'🇨🇴 Colombia',level:'IC4',priority:'Monitor',ratio:37,w:10,channels:['LinkedIn','Inbound'],note:'Healthy ratio. TA Interview is main bottleneck.'},
-  {id:'co-ic5',country:'🇨🇴 Colombia',level:'IC5',priority:'High',ratio:62,w:16,channels:['LinkedIn','Inbound','Referrals'],note:'Steady cadence recommended.'},
-  {id:'co-ic6',country:'🇨🇴 Colombia',level:'IC6',priority:'Monitor',ratio:824,w:210,channels:['LinkedIn'],note:'High-volume sourcing. TA Interview PTR critical.'},
-  {id:'ar-ic5',country:'🇦🇷 Argentina',level:'IC5',priority:'High',ratio:68,w:18,channels:['LinkedIn','Inbound','Referrals'],note:'Inbound and referrals can complement sourcing.'},
-  {id:'ar-ic6',country:'🇦🇷 Argentina',level:'IC6',priority:'High',ratio:276,w:70,channels:['LinkedIn'],note:'Projection only — adjust once real hire data available.'},
-  {id:'mx-ic4',country:'🇲🇽 Mexico',level:'IC4',priority:'Monitor',ratio:48,w:12,channels:['LinkedIn','Inbound'],note:'TA Interview at 29% is main bottleneck.'},
-  {id:'mx-ic5',country:'🇲🇽 Mexico',level:'IC5',priority:'High',ratio:191,w:48,channels:['LinkedIn','Inbound'],note:'Monitor conversion at each tech stage.'},
-  {id:'mx-ic6',country:'🇲🇽 Mexico',level:'IC6',priority:'High',ratio:1098,w:275,channels:['LinkedIn'],note:'Sourcing volume is the #1 lever.'},
-];
-
 function calcFunnel(stages){
   const n=stages.length;
   let c=new Array(n).fill(0);
@@ -223,6 +213,21 @@ function stageColor(ptr,isHire){
   if(ptr<0.4)return'#F59E0B';
   if(ptr<0.6)return'#A78BFA';
   return'#7C3AED';
+}
+
+function getActivePlans(){
+  return sourcingPlans.filter(p=>p.status?.toLowerCase()==='active');
+}
+
+function calcOutreaches(plan){
+  const active=getActivePlans();
+  const activeCount=active.length||1;
+  const pl=pipelines.find(x=>x.id===plan.id);
+  if(!pl)return{ratio:0,weekly:0};
+  const{counts}=calcFunnel(pl.stages);
+  const ratio=counts[0];
+  const weekly=Math.ceil((ratio*(TARGET_HIRES/activeCount)*1.25)/4);
+  return{ratio,weekly};
 }
 
 function renderFunnels(){
@@ -300,32 +305,42 @@ function renderFunnels(){
 }
 
 function renderSourcing(){
-  const plans=(sourcingPlans.length?sourcingPlans:defaultSourcing).filter(p=>p.status?.toLowerCase()!=='no open positions');
-  const total=plans.reduce((s,p)=>s+p.w,0);
-  const h=plans.filter(p=>p.priority==='High').reduce((s,p)=>s+p.w,0);
-  const m=plans.filter(p=>p.priority==='Medium').reduce((s,p)=>s+p.w,0);
-  const mo=plans.filter(p=>p.priority==='Monitor').reduce((s,p)=>s+p.w,0);
+  const plans=sourcingPlans.filter(p=>p.status?.toLowerCase()!=='no open positions');
+  if(!plans.length){
+    document.getElementById('sourcing-content').innerHTML=`<div style="background:white;border-radius:10px;padding:20px;font-size:13px;color:#9CA3AF;">No active pipelines. Check Sourcing_Plan in Google Sheets.</div>`;
+    return;
+  }
+  const active=plans.filter(p=>p.status?.toLowerCase()==='active');
+  const activeCount=active.length||1;
+  let totalWeekly=0;
+  let totalHigh=0,totalMed=0,totalMon=0;
+
   const pMap={'High':'p1','Medium':'p2','Monitor':'p3'};
   const pLabel={'High':'🔴 High','Medium':'🟡 Medium','Monitor':'🟢 Monitor'};
   const now=new Date();
   const thisMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
-  const card=s=>{
-    const pipelineKey=`${s.country.includes('Colombia')?'CO':s.country.includes('Argentina')?'AR':'MX'} - ${s.level}`;
+  const card=p=>{
+    const{ratio,weekly}=calcOutreaches(p);
+    totalWeekly+=weekly;
+    if(p.priority==='High')totalHigh+=weekly;
+    else if(p.priority==='Medium')totalMed+=weekly;
+    else totalMon+=weekly;
+    const pipelineKey=`${p.country.includes('Colombia')?'CO':p.country.includes('Argentina')?'AR':'MX'} - ${p.level}`;
     const actual=monthlyData.filter(d=>d.month===thisMonth&&d.pipeline===pipelineKey&&d.stage==='Application Review').reduce((sum,d)=>sum+parseInt(d.candidates||0),0);
-    const monthTarget=s.w*4;
+    const monthTarget=weekly*4;
     const pct=monthTarget>0?Math.min(100,Math.round((actual/monthTarget)*100)):0;
     const fillClass=pct>=100?'over':pct>=50?'':'warn';
     return`<div class="scard">
       <div class="sinfo" style="flex:1">
-        <h4>${s.country} — ${s.level} <span class="pbadge ${pMap[s.priority]||'p3'}">${pLabel[s.priority]||s.priority}</span></h4>
-        <p>${s.note}</p>
-        <div class="ctags">${(s.channels||[]).map(c=>`<span class="ctag">${c}</span>`).join('')}</div>
+        <h4>${p.country} — ${p.level} <span class="pbadge ${pMap[p.priority]||'p3'}">${pLabel[p.priority]||p.priority}</span></h4>
+        <p>${p.note}</p>
+        <div class="ctags">${(p.channels||[]).map(c=>`<span class="ctag">${c}</span>`).join('')}</div>
         ${actual>0?`<div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280"><span>This month: ${actual} candidates</span><span>${pct}% of target</span></div><div class="live-bar"><div class="live-fill ${fillClass}" style="width:${pct}%"></div></div></div>`:''}
       </div>
       <div style="display:flex;gap:14px;flex-shrink:0">
-        <div class="sm"><div class="smn">${s.w}</div><div class="sml">target/week</div></div>
-        <div class="sm"><div class="smn">${s.ratio}:1</div><div class="sml">ratio</div></div>
+        <div class="sm"><div class="smn">${weekly}</div><div class="sml">outreaches/week</div></div>
+        <div class="sm"><div class="smn">${ratio}:1</div><div class="sml">ratio</div></div>
       </div>
     </div>`;
   };
@@ -333,14 +348,15 @@ function renderSourcing(){
   const highs=plans.filter(p=>p.priority==='High');
   const meds=plans.filter(p=>p.priority==='Medium');
   const mons=plans.filter(p=>p.priority==='Monitor');
+  const allCards=[...highs,...meds,...mons].map(card).join('');
 
   document.getElementById('sourcing-content').innerHTML=`
     <div class="stotal">
-      <div><div class="lbl">Total weekly outreaches needed</div><div class="big">${total.toLocaleString()}</div><div class="lbl">across all active pipelines</div></div>
+      <div><div class="lbl">Total weekly outreaches needed (${activeCount} active pipelines)</div><div class="big">${totalWeekly.toLocaleString()}</div><div class="lbl">3 hires/month target + 25% buffer</div></div>
       <div class="sbd">
-        <div><div class="n">${h}</div><div class="l">🔴 High</div></div>
-        <div><div class="n">${m}</div><div class="l">🟡 Medium</div></div>
-        <div><div class="n">${mo}</div><div class="l">🟢 Monitor</div></div>
+        <div><div class="n">${totalHigh}</div><div class="l">🔴 High</div></div>
+        <div><div class="n">${totalMed}</div><div class="l">🟡 Medium</div></div>
+        <div><div class="n">${totalMon}</div><div class="l">🟢 Monitor</div></div>
       </div>
     </div>
     ${highs.length?`<div class="sec">🔴 High Priority</div>${highs.map(card).join('')}`:''}
@@ -436,18 +452,14 @@ function renderKPIs(){
   const filtered=sel==='all'?monthlyData:monthlyData.filter(d=>d.pipeline===sel);
   const rawMonths=[...new Set(filtered.map(d=>d.month))].sort();
   const months=rawMonths.map(formatMonth);
-
   const sum=(m,stage)=>filtered.filter(d=>d.month===m&&d.stage===stage).reduce((s,d)=>s+parseInt(d.candidates||0),0);
   const techStages=['Qualification Test','Technical Stage 1','Technical Stage 2','Technical Stage 3','Arch Interview','Pair Programming'];
   const techSum=m=>filtered.filter(d=>d.month===m&&techStages.includes(d.stage)).reduce((s,d)=>s+parseInt(d.candidates||0),0);
-
   const topFunnel=rawMonths.map(m=>sum(m,'Application Review'));
   const tech=rawMonths.map(m=>techSum(m));
   const hires=rawMonths.map(m=>sum(m,'Hired'));
   const offers=rawMonths.map(m=>sum(m,'Offer'));
-
   ['c1','c2','c3','c4'].forEach(id=>{const el=document.getElementById(id);if(el){const c=Chart.getChart(el);if(c)c.destroy();}});
-
   document.getElementById('kpis-content').innerHTML=`
     <div class="charts-grid">
       <div class="chart-box"><div class="chart-title">📥 Top of Funnel — New Candidates/Month</div><canvas id="c1"></canvas></div>
@@ -455,7 +467,6 @@ function renderKPIs(){
       <div class="chart-box"><div class="chart-title">🏁 Hires vs Target (3/month)</div><canvas id="c3"></canvas></div>
       <div class="chart-box"><div class="chart-title">📋 Offers Extended</div><canvas id="c4"></canvas></div>
     </div>`;
-
   const opts={responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}};
   new Chart(document.getElementById('c1'),{type:'bar',data:{labels:months,datasets:[{data:topFunnel,backgroundColor:'#A78BFA',borderRadius:6}]},options:opts});
   new Chart(document.getElementById('c2'),{type:'bar',data:{labels:months,datasets:[{data:tech,backgroundColor:'#7C3AED',borderRadius:6}]},options:opts});
@@ -464,16 +475,27 @@ function renderKPIs(){
 }
 
 function renderFocus(){
-  const plans=sourcingPlans.length?sourcingPlans:defaultSourcing;
+  const plans=sourcingPlans.filter(p=>p.status?.toLowerCase()!=='no open positions');
   const criticalPipelines=pipelines.filter(p=>!p.warn&&getBad(p.stages).some(s=>s.ptr<0.15));
-  const highRatio=pipelines.filter(p=>!p.warn&&calcFunnel(p.stages).counts[0]>500);
   const longOpen=openPositions.filter(p=>p.opening_status==='Open'&&parseInt(p.days_open)>30);
 
   const allItems=[
-    ...plans.filter(p=>p.priority==='High').map(p=>({id:`src-${p.id}`,section:'🔴 Sourcing — Critical this week',title:`Hit outreach target for ${p.country.split(' ')[0]} ${p.level}`,desc:`${p.ratio}:1 ratio. Weekly target: ${p.w} outreaches.`,tag:'critical'})),
-    ...plans.filter(p=>p.priority!=='High').map(p=>({id:`src2-${p.id}`,section:'🟡 Sourcing — Keep cadence',title:`Maintain outreach for ${p.country.split(' ')[0]} ${p.level}`,desc:`Weekly target: ${p.w} outreaches. Ratio: ${p.ratio}:1`,tag:'weekly'})),
-    ...criticalPipelines.map(p=>{const bad=getBad(p.stages).filter(s=>s.ptr<0.15);return{id:`bn-${p.id}`,section:'⚙️ Pipeline Health',title:`Review bottleneck in ${p.country.split(' ')[0]} ${p.level}`,desc:`${bad.map(b=>`${b.n} at ${Math.round(b.ptr*100)}%`).join(', ')} — check interviewer calibration`,tag:'critical'};}),
-    ...pipelines.filter(p=>!p.warn&&getBad(p.stages).some(s=>s.ptr>=0.15&&s.ptr<0.35)).map(p=>{const bad=getBad(p.stages).filter(s=>s.ptr>=0.15&&s.ptr<0.35);return{id:`bn2-${p.id}`,section:'⚙️ Pipeline Health',title:`Monitor conversion in ${p.country.split(' ')[0]} ${p.level}`,desc:`Watch: ${bad.map(b=>`${b.n} (${Math.round(b.ptr*100)}%)`).join(', ')}`,tag:'weekly'};}),
+    ...plans.filter(p=>p.priority==='High').map(p=>{
+      const{ratio,weekly}=calcOutreaches(p);
+      return{id:`src-${p.id}`,section:'🔴 Sourcing — Critical this week',title:`Hit outreach target for ${p.country.split(' ')[0]} ${p.level}`,desc:`${ratio}:1 ratio. Weekly target: ${weekly} outreaches.`,tag:'critical'};
+    }),
+    ...plans.filter(p=>p.priority!=='High').map(p=>{
+      const{ratio,weekly}=calcOutreaches(p);
+      return{id:`src2-${p.id}`,section:'🟡 Sourcing — Keep cadence',title:`Maintain outreach for ${p.country.split(' ')[0]} ${p.level}`,desc:`Weekly target: ${weekly} outreaches. Ratio: ${ratio}:1`,tag:'weekly'};
+    }),
+    ...criticalPipelines.map(p=>{
+      const bad=getBad(p.stages).filter(s=>s.ptr<0.15);
+      return{id:`bn-${p.id}`,section:'⚙️ Pipeline Health',title:`Review bottleneck in ${p.country.split(' ')[0]} ${p.level}`,desc:`${bad.map(b=>`${b.n} at ${Math.round(b.ptr*100)}%`).join(', ')} — check interviewer calibration`,tag:'critical'};
+    }),
+    ...pipelines.filter(p=>!p.warn&&getBad(p.stages).some(s=>s.ptr>=0.15&&s.ptr<0.35)).map(p=>{
+      const bad=getBad(p.stages).filter(s=>s.ptr>=0.15&&s.ptr<0.35);
+      return{id:`bn2-${p.id}`,section:'⚙️ Pipeline Health',title:`Monitor conversion in ${p.country.split(' ')[0]} ${p.level}`,desc:`Watch: ${bad.map(b=>`${b.n} (${Math.round(b.ptr*100)}%)`).join(', ')}`,tag:'weekly'};
+    }),
     ...longOpen.map(p=>({id:`pos-${p.job_opening_id}`,section:'📋 Open Positions',title:`Follow up on ${p.country} ${p.level} — ${p.days_open} days open`,desc:`Actively managed but open for over 30 days.`,tag:'critical'})),
     {id:'monthly-ptr',section:'📊 Monthly Review',title:'Update PTR data if 10+ new candidates per stage',desc:'Pull latest Greenhouse report and compare PTRs.',tag:'monthly'},
     {id:'monthly-track',section:'📊 Monthly Review',title:'Review hires vs target (3/month)',desc:'Check KPIs tab — adjust sourcing priorities if needed.',tag:'monthly'},
@@ -545,29 +567,25 @@ async function loadSheet(name){
 async function loadData(){
   document.getElementById('updated').textContent='Refreshing...';
 
-  // Sourcing Plan from Sheet
+  // Sourcing Plan
   const spT=await loadSheet('Sourcing_Plan');
   if(spT?.rows?.length>1){
     const cols=spT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
-    const sheetPlans=spT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
+    const countryMap={'Colombia':'🇨🇴 Colombia','Argentina':'🇦🇷 Argentina','México':'🇲🇽 Mexico','Mexico':'🇲🇽 Mexico'};
+    sourcingPlans=spT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
       const o={};
       cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString().trim()||'';});
-      const countryMap={'Colombia':'🇨🇴 Colombia','Argentina':'🇦🇷 Argentina','México':'🇲🇽 Mexico','Mexico':'🇲🇽 Mexico'};
       return{
         id:o.pipeline_id?.toLowerCase().replace(/\s*[—–-]\s*/g,'-').replace(/\s/g,''),
         country:countryMap[o.country]||o.country,
         level:o.level,
         priority:o.priority,
-        status:o.status||'Active',
-        ratio:parseInt(o.ratio)||0,
-        w:parseInt(o.outreaches_per_week)||0,
+        status:o.status||'active',
         channels:(o.channels||'').split(',').map(c=>c.trim()).filter(Boolean),
         note:o.notes||''
       };
     });
-    if(sheetPlans.length>0)sourcingPlans=sheetPlans;
-    else sourcingPlans=defaultSourcing;
-  } else { sourcingPlans=defaultSourcing; }
+  }
 
   // PTR Data
   const ptrT=await loadSheet('PTR_Data');
