@@ -570,11 +570,12 @@ async function loadData(){
   // Sourcing Plan
   const spT=await loadSheet('Sourcing_Plan');
   if(spT?.rows?.length>1){
-    const cols=spT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
     const countryMap={'Colombia':'🇨🇴 Colombia','Argentina':'🇦🇷 Argentina','México':'🇲🇽 Mexico','Mexico':'🇲🇽 Mexico'};
+    // Headers are in row 0, data starts at row 1
+    const headerRow=spT.rows[0].c.map(c=>c?.v?.toString().toLowerCase().replace(/ /g,'_')||'');
     sourcingPlans=spT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
       const o={};
-      cols.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString().trim()||'';});
+      headerRow.forEach((col,i)=>{o[col]=r.c[i]?.v?.toString().trim()||'';});
       return{
         id:o.pipeline_id?.toLowerCase().replace(/\s*[—–-]\s*/g,'-').replace(/\s/g,''),
         country:countryMap[o.country]||o.country,
