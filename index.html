@@ -570,7 +570,7 @@ async function loadData(){
   // Sourcing Plan
   const spT=await loadSheet('Sourcing_Plan');
   if(spT?.rows?.length>1){
-    const cols=spT.cols.map(c=>c.label?.toLowerCase().replace(/ /g,'_')||'');
+    const cols=spT.rows[0].c.map(c=>c?.v?.toString().toLowerCase().replace(/ /g,'_')||'');
     const countryMap={'Colombia':'🇨🇴 Colombia','Argentina':'🇦🇷 Argentina','México':'🇲🇽 Mexico','Mexico':'🇲🇽 Mexico'};
     sourcingPlans=spT.rows.slice(1).filter(r=>r.c[0]?.v).map(r=>{
       const o={};
@@ -587,20 +587,49 @@ async function loadData(){
     });
   }
 
-  // PTR Data
+  // PTR Data — manual fallback
   const ptrT=await loadSheet('PTR_Data');
+  const manualPTR={};
   if(ptrT?.rows?.length>1){
-    const upd={};
-    ptrT.rows.forEach(r=>{
+    ptrT.rows.slice(1).forEach(r=>{
       if(!r.c[0]?.v)return;
       const id=r.c[0].v.toString().trim();
-      const stage=r.c[1]?.v;
+      const stage=r.c[1]?.v?.toString().trim();
       const ptr=parseFloat(r.c[2]?.v);
-      if(!upd[id])upd[id]=[];
-      if(stage&&!isNaN(ptr))upd[id].push({n:stage,ptr});
+      if(!manualPTR[id])manualPTR[id]={};
+      if(stage&&!isNaN(ptr))manualPTR[id][stage]=ptr;
     });
-    pipelines=defaultPipelines.map(p=>upd[p.id]?.length?{...p,stages:[...upd[p.id],{n:'Hired',ptr:null}]}:p);
-  } else { pipelines=defaultPipelines; }
+  }
+
+  // PTR_Calculated — real PTR from completed candidates only
+  const calcT=await loadSheet('PTR_Calculated');
+  const calculatedPTR={};
+  if(calcT?.rows?.length>1){
+    calcT.rows.slice(1).forEach(r=>{
+      if(!r.c[0]?.v)return;
+      const id=r.c[0].v.toString().trim();
+      const stage=r.c[1]?.v?.toString().trim();
+      const ptr=parseFloat(r.c[4]?.v);
+      const note=r.c[5]?.v?.toString()||'';
+      const lowSample=note.includes('Low sample');
+      if(!calculatedPTR[id])calculatedPTR[id]={};
+      if(stage&&!isNaN(ptr)&&!lowSample)calculatedPTR[id][stage]=ptr;
+    });
+  }
+
+  // Merge: use PTR_Calculated where available, fallback to PTR_Data
+  pipelines=defaultPipelines.map(p=>{
+    const calc=calculatedPTR[p.id]||{};
+    const manual=manualPTR[p.id]||{};
+    const merged={...manual,...calc}; // calculated overrides manual
+    if(Object.keys(merged).length===0)return p;
+    const stages=p.stages.map(s=>{
+      if(s.ptr===null)return s; // Hired
+      const ptr=merged[s.n]??s.ptr;
+      return{...s,ptr};
+    });
+    return{...p,stages};
+  });
 
   // Open Positions
   const posT=await loadSheet('Open_Positions_Static');
