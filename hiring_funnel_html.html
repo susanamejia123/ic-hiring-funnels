@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TA Pipeline Intelligence — Nubank</title>
+<style>
+:root {
+  --nu: #820AD1;
+  --nu-dark: #6208A3;
+  --nu-light: #F3E6FD;
+  --nu-mid: #C47FEF;
+  --nu-bg: #FFFFFF;
+  --nu-surface: #FAF5FF;
+  --nu-text: #1A0533;
+  --nu-muted: #717171;
+  --nu-border: #EDE0F5;
+  --green: #00A868;
+  --green-light: #E6F8F2;
+  --red: #C7002A;
+  --red-light: #FFE6EC;
+  --amber: #B45309;
+  --amber-light: #FEF3C7;
+  --gray: #9CA3AF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--nu-surface); min-height: 100vh; color: var(--nu-text); }
+
+/* Header */
+.header { background: var(--nu); padding: 20px 32px; }
+.header-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.header h1 { color: white; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.header-sub { color: rgba(255,255,255,0.75); font-size: 12px; margin-top: 2px; }
+.header-date { color: rgba(255,255,255,0.75); font-size: 12px; text-align: right; line-height: 1.6; }
+.header-date strong { color: white; font-size: 14px; }
+
+/* Top nav */
+.topnav { background: white; border-bottom: 1px solid var(--nu-border); padding: 0 32px; position: sticky; top: 0; z-index: 10; }
+.topnav-inner { max-width: 1080px; margin: 0 auto; display: flex; }
+.navtab { padding: 14px 20px; font-size: 14px; font-weight: 600; color: var(--nu-muted); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; }
+.navtab.active { color: var(--nu); border-bottom-color: var(--nu); }
+.navtab:hover:not(.active) { color: var(--nu); }
+
+/* Main */
+.main { max-width: 1080px; margin: 0 auto; padding: 28px 32px; }
+.section { display: none; }
+.section.active { display: block; }
+.section-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.section-sub { font-size: 13px; color: var(--nu-muted); margin-bottom: 24px; }
+
+/* ── OVERVIEW ── */
+.overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; }
+.hc { background: white; border-radius: 12px; padding: 20px; border: 1.5px solid var(--nu-border); }
+.hc.red  { border-left: 4px solid var(--red); }
+.hc.gray { border-left: 4px solid var(--gray); }
+.hc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.hc-name { font-size: 15px; font-weight: 700; }
+.badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; }
+.badge-red  { background: var(--red-light); color: var(--red); }
+.badge-gray { background: #F3F4F6; color: var(--gray); }
+.hc-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.hcs-label { font-size: 10px; color: var(--nu-muted); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; }
+.hcs-val { font-size: 22px; font-weight: 800; }
+.hcs-val.red { color: var(--red); }
+.hcs-val.nu  { color: var(--nu); }
+.hcs-sub { font-size: 10px; color: var(--nu-muted); }
+.hc-note { background: var(--nu-light); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--nu); font-weight: 600; margin-bottom: 12px; }
+.hc-note.gray { background: #F3F4F6; color: var(--nu-muted); font-weight: 400; }
+.pipeline-bar { display: flex; gap: 5px; align-items: flex-end; padding-top: 4px; }
+.pb-col { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.pb-bar { width: 100%; border-radius: 3px 3px 0 0; background: var(--nu); opacity: 0.18; min-height: 4px; }
+.pb-bar.on  { opacity: 0.75; }
+.pb-bar.hi  { background: var(--green); opacity: 1; }
+.pb-n { font-size: 10px; font-weight: 700; color: var(--nu-text); }
+.pb-n.hi { color: var(--green); }
+.pb-lbl { font-size: 9px; color: var(--nu-muted); margin-top: 1px; }
+
+/* ── FORWARD LOOK ── */
+.fl-list { display: flex; flex-direction: column; gap: 20px; }
+.fl-card { background: white; border-radius: 12px; border: 1.5px solid var(--nu-border); overflow: hidden; }
+.fl-head { padding: 16px 20px; background: var(--red-light); display: flex; justify-content: space-between; align-items: flex-start; }
+.fl-head-text h3 { font-size: 16px; font-weight: 700; color: var(--red); }
+.fl-head-text p  { font-size: 12px; color: var(--red); opacity: 0.8; margin-top: 2px; }
+.pill { font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: var(--red); color: white; white-space: nowrap; }
+.fl-body { padding: 16px 20px; }
+.fl-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.flm-label { font-size: 10px; color: var(--nu-muted); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 3px; }
+.flm-val { font-size: 22px; font-weight: 800; }
+.flm-val.red { color: var(--red); }
+.flm-val.nu  { color: var(--nu); }
+.flm-sub { font-size: 11px; color: var(--nu-muted); }
+.stages-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.stage-chip { display: flex; flex-direction: column; align-items: center; padding: 8px 10px; border-radius: 8px; background: var(--nu-surface); border: 1px solid var(--nu-border); min-width: 58px; }
+.stage-chip.on { background: var(--nu-light); border-color: var(--nu); }
+.stage-chip.star { background: var(--green-light); border-color: var(--green); }
+.sc-n { font-size: 17px; font-weight: 800; color: var(--nu-text); }
+.sc-n.green { color: var(--green); }
+.sc-lbl { font-size: 9px; color: var(--nu-muted); text-align: center; margin-top: 2px; }
+.action-box { background: var(--nu-light); border-radius: 8px; padding: 12px 16px; }
+.action-box-title { font-size: 11px; font-weight: 700; color: var(--nu); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.action-line { font-size: 13px; color: var(--nu-text); line-height: 1.6; padding: 3px 0; }
+.action-line::before { content: "→ "; color: var(--nu); font-weight: 700; }
+
+/* ── FUNNEL DETAIL ── */
+.fd-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.fd-tab { padding: 7px 16px; border-radius: 20px; border: 1.5px solid var(--nu-border); cursor: pointer; font-size: 13px; font-weight: 600; background: white; color: var(--nu-muted); transition: all 0.15s; }
+.fd-tab.active  { background: var(--nu); color: white; border-color: var(--nu); }
+.fd-tab.warn    { border-color: var(--red); color: var(--red); }
+.fd-tab.warn.active { background: var(--red); border-color: var(--red); color: white; }
+.fd-tab:hover:not(.active) { border-color: var(--nu); color: var(--nu); }
+.fd-panel { display: none; }
+.fd-panel.active { display: block; }
+.kpi-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.kpi { background: white; border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 140px; border: 1.5px solid var(--nu-border); }
+.kpi.primary { background: var(--nu); border-color: var(--nu); }
+.kpi.accent  { background: var(--nu-mid); border-color: var(--nu-mid); }
+.kpi-label { font-size: 10px; color: var(--nu-muted); margin-bottom: 4px; }
+.kpi.primary .kpi-label, .kpi.accent .kpi-label { color: rgba(255,255,255,0.8); }
+.kpi-value { font-size: 28px; font-weight: 800; color: var(--nu-text); line-height: 1; }
+.kpi.primary .kpi-value, .kpi.accent .kpi-value { color: white; }
+.kpi-sub { font-size: 10px; color: var(--nu-muted); margin-top: 3px; }
+.kpi.primary .kpi-sub, .kpi.accent .kpi-sub { color: rgba(255,255,255,0.7); }
+.bn-bar { background: var(--amber-light); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: var(--amber); border: 1px solid #FDE68A; }
+.proj-banner { background: var(--red-light); border: 1px solid var(--red); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: var(--red); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--nu-border); margin-bottom: 12px; }
+thead tr { background: var(--nu); color: white; }
+th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; }
+th:not(:first-child) { text-align: center; }
+td { padding: 9px 14px; border-bottom: 1px solid #F3F4F6; }
+td:not(:first-child) { text-align: center; }
+tr:last-child td { border-bottom: none; }
+tr.bn-row  { background: #FFFBEB; }
+tr.hire-row { background: var(--nu-light); }
+tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
+.ptr-bad { color: var(--red); font-weight: 700; }
+.ptr-ok  { color: var(--nu-muted); }
+.td-buf  { background: var(--nu-mid); color: white; font-weight: 700; }
+.td-buf-hire { background: var(--nu); color: white; font-weight: 700; }
+.td-n    { font-weight: 600; }
+.sn      { color: #374151; }
+.sn.bad  { color: var(--red); font-weight: 700; }
+.sn.hire { color: var(--nu); font-weight: 700; }
+.ref-tag { color: var(--gray); font-size: 10px; margin-left: 4px; }
+.notes { font-size: 11px; color: var(--nu-muted); line-height: 1.9; margin-top: 8px; }
+.notes div::before { content: "· "; }
+
+/* ── MANAGER REPORT ── */
+.mgr-header { background: var(--nu); color: white; border-radius: 12px; padding: 22px 26px; margin-bottom: 24px; }
+.mgr-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.mgr-sub { font-size: 13px; opacity: 0.8; }
+.mgr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ms { background: white; border-radius: 12px; padding: 18px 20px; border: 1.5px solid var(--nu-border); }
+.ms.full { grid-column: 1 / -1; }
+.ms-title { font-size: 11px; font-weight: 700; color: var(--nu); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+.hr { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--nu-border); }
+.hr:last-child { border-bottom: none; }
+.hr-left { display: flex; gap: 10px; align-items: center; }
+.hr-name { font-size: 13px; font-weight: 600; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.dot-red  { background: var(--red); }
+.dot-gray { background: var(--gray); }
+.hr-right { display: flex; gap: 14px; }
+.hr-stat { font-size: 12px; color: var(--nu-muted); }
+.hr-stat span { font-weight: 700; color: var(--nu-text); }
+.hr-stat span.red { color: var(--red); }
+.wow-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.wow-table th { text-align: left; font-size: 10px; color: var(--nu-muted); text-transform: uppercase; letter-spacing: 0.3px; padding: 0 0 8px; font-weight: 600; }
+.wow-table th:not(:first-child) { text-align: center; }
+.wow-table td { padding: 7px 0; border-top: 1px solid var(--nu-border); }
+.wow-table td:not(:first-child) { text-align: center; font-weight: 600; }
+.snapshot-note { background: var(--amber-light); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--amber); margin-bottom: 14px; border: 1px solid #FDE68A; }
+.risk-item { padding: 9px 0; border-bottom: 1px solid var(--nu-border); }
+.risk-item:last-child { border-bottom: none; }
+.risk-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 4px; display: inline-block; }
+.risk-high { background: var(--red-light); color: var(--red); }
+.risk-med  { background: var(--amber-light); color: var(--amber); }
+.risk-text { font-size: 13px; color: var(--nu-text); line-height: 1.5; }
+.ai { padding: 9px 12px; margin-bottom: 8px; background: var(--nu-surface); border-radius: 8px; font-size: 13px; border-left: 3px solid var(--nu); color: var(--nu-text); line-height: 1.5; }
+.ai:last-child { margin-bottom: 0; }
+.ai.green { background: var(--green-light); border-left-color: var(--green); }
+
+@media (max-width: 640px) {
+  .header, .topnav, .main { padding-left: 16px; padding-right: 16px; }
+  .mgr-grid, .fl-metrics { grid-template-columns: 1fr 1fr; }
+  .mgr-grid .full { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div>
+      <h1>TA Pipeline Intelligence</h1>
+      <div class="header-sub">IC5 &amp; IC6 · Colombia · Argentina · México · Nubank Engineering</div>
+    </div>
+    <div class="header-date">Datos al<br><strong>06 abr 2026</strong></div>
+  </div>
+</div>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <button class="navtab active" onclick="showSection('overview',this)">🏠 Overview</button>
+    <button class="navtab" onclick="showSection('forward',this)">🔭 Forward Look</button>
+    <button class="navtab" onclick="showSection('funnel',this)">📊 Funnel Detail</button>
+    <button class="navtab" onclick="showSection('manager',this)">📋 Manager Report</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════ OVERVIEW ═══════════════════════════════ -->
+<div id="overview" class="section active">
+  <div class="section-title">Pipeline Overview</div>
+  <p class="section-sub">Estado general · datos actualizados 06 abr 2026 · SLA, candidatos activos y proyección de hires</p>
+  <div class="overview-grid">
+
+    <div class="hc red">
+      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC5</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">25</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
+      </div>
+      <div class="hc-note">⚠️ 12 SLA vencidos · Sourcing urgente</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:36px"></div><div class="pb-n">16</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:12px"></div><div class="pb-n">4</div><div class="pb-lbl">Qual</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:12px"></div><div class="pb-n">4</div><div class="pb-lbl">T2</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px"></div><div class="pb-n">1</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">TA</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="hc red">
+      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC5</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">42</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.4</div><div class="hcs-sub">GAP: 3.6</div></div>
+      </div>
+      <div class="hc-note">⚠️ 26 SLA vencidos — mayor deuda de todos</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:44px"></div><div class="pb-n">22</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:12px"></div><div class="pb-n">5</div><div class="pb-lbl">Qual</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:28px"></div><div class="pb-n">12</div><div class="pb-lbl">T2</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px"></div><div class="pb-n">2</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px"></div><div class="pb-n">1</div><div class="pb-lbl">TA</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="hc gray">
+      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC5</div><span class="badge badge-gray">Sin posiciones</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val">0</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">7</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">SLA vencido</div><div class="hcs-val red">4</div><div class="hcs-sub">candidatos</div></div>
+      </div>
+      <div class="hc-note gray">Pipeline de mantenimiento · 4 SLA vencidos a resolver</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:8px;opacity:0.4"></div><div class="pb-n">3</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">2</div><div class="pb-lbl">Qual</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">1</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">1</div><div class="pb-lbl">HM</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="hc gray">
+      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC6</div><span class="badge badge-gray">Sin posiciones</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val">0</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">10</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">SLA vencido</div><div class="hcs-val red">8</div><div class="hcs-sub">candidatos</div></div>
+      </div>
+      <div class="hc-note gray">Pipeline activo · Resolver 8 SLA vencidos</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:12px;opacity:0.4"></div><div class="pb-n">5</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">2</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">1</div><div class="pb-lbl">T2</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">1</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">1</div><div class="pb-lbl">TA</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="hc red">
+      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC6</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">6</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
+      </div>
+      <div class="hc-note">🌟 1 candidato en HM Stage — empujar ahora</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:14px"></div><div class="pb-n">5</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T2</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">TA</div></div>
+        <div class="pb-col"><div class="pb-bar hi" style="height:8px"></div><div class="pb-n hi">1</div><div class="pb-lbl">HM</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="hc red">
+      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC6</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-stats">
+        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">3</div><div class="hcs-sub">abiertas</div></div>
+        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">17</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0</div><div class="hcs-sub">GAP: 3</div></div>
+      </div>
+      <div class="hc-note">⚠️ 16 acumulados en Screening · Desatascar</div>
+      <div class="pipeline-bar">
+        <div class="pb-col"><div class="pb-bar on" style="height:40px"></div><div class="pb-n">16</div><div class="pb-lbl">Scr</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
+        <div class="pb-col"><div class="pb-bar on" style="height:6px"></div><div class="pb-n">1</div><div class="pb-lbl">T2</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T3</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">TA</div></div>
+        <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">Offer</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FORWARD LOOK ═══════════════════════════════ -->
+<div id="forward" class="section">
+  <div class="section-title">Forward Look</div>
+  <p class="section-sub">TTH objetivo: 60 días · ¿Cuánto pipeline necesito hoy para cerrar mis posiciones a tiempo?</p>
+
+  <div class="fl-list">
+
+    <!-- MX IC6 — MEJOR OPORTUNIDAD CERCANA -->
+    <div class="fl-card">
+      <div class="fl-head">
+        <div class="fl-head-text">
+          <h3>🇲🇽 México · IC6 · Lead Software Engineer</h3>
+          <p>HMs: Fabio Moreira · Oscar Vargas · Justin Gehtland · Laiz Lipiainen · Posiciones: 192–259 días abiertas</p>
+        </div>
+        <span class="pill">🔴 Crítico</span>
+      </div>
+      <div class="fl-body">
+        <div class="fl-metrics">
+          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
+          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">GAP</div><div class="flm-val red">3.9</div><div class="flm-sub">posiciones</div></div>
+          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,846</div><div class="flm-sub">necesarios</div></div>
+        </div>
+        <div class="stages-row">
+          <div class="stage-chip on"><div class="sc-n">5</div><div class="sc-lbl">Screening</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T1</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T2</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T3</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">TA Int</div></div>
+          <div class="stage-chip star"><div class="sc-n green">1</div><div class="sc-lbl">🌟 HM</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
+        </div>
+        <div class="action-box">
+          <div class="action-box-title">Acciones prioritarias esta semana</div>
+          <div class="action-line">El candidato en HM es tu única oportunidad real de hire en 60 días — prioridad absoluta</div>
+          <div class="action-line">Para 4 hires necesitas ~364 en Screening (PTR 91:1). Hoy tienes 5. Sourcing masivo urgente.</div>
+          <div class="action-line">Posición más vieja: 259 días. Targets de Q3 2025 ya vencidos — escalar a manager.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CO IC5 -->
+    <div class="fl-card">
+      <div class="fl-head">
+        <div class="fl-head-text">
+          <h3>🇨🇴 Colombia · IC5 · Senior Software Engineer</h3>
+          <p>HMs: Dante Cassanego · Renato Peres · Bruno Junqueira (×2) · 101–226 días abiertos</p>
+        </div>
+        <span class="pill">🔴 Crítico</span>
+      </div>
+      <div class="fl-body">
+        <div class="fl-metrics">
+          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
+          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">SLA vencidos</div><div class="flm-val red">12</div><div class="flm-sub">candidatos</div></div>
+          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,845</div><div class="flm-sub">necesarios</div></div>
+        </div>
+        <div class="stages-row">
+          <div class="stage-chip on"><div class="sc-n">16</div><div class="sc-lbl">Screening</div></div>
+          <div class="stage-chip on"><div class="sc-n">4</div><div class="sc-lbl">Qual Test</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T1</div></div>
+          <div class="stage-chip on"><div class="sc-n">4</div><div class="sc-lbl">T2</div></div>
+          <div class="stage-chip on"><div class="sc-n">1</div><div class="sc-lbl">T3 ★</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">TA Int</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
+        </div>
+        <div class="action-box">
+          <div class="action-box-title">Acciones prioritarias esta semana</div>
+          <div class="action-line">Candidato en T3: si pasa TA → HM → Debrief puede estar en Offer en ~25 días. Seguimiento cercano.</div>
+          <div class="action-line">Resolver 12 SLA vencidos — están bloqueando el flujo del pipeline.</div>
+          <div class="action-line">Para 4 hires: necesitas ~244 en Screening (PTR 61:1). Hoy tienes 16. GAP: 228.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MX IC5 -->
+    <div class="fl-card">
+      <div class="fl-head">
+        <div class="fl-head-text">
+          <h3>🇲🇽 México · IC5 · Senior Software Engineer</h3>
+          <p>HMs: Ulises Figueroa (×3) · Leonardo Marinho · 101–224 días abiertos</p>
+        </div>
+        <span class="pill">🔴 Crítico</span>
+      </div>
+      <div class="fl-body">
+        <div class="fl-metrics">
+          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
+          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.4</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">SLA vencidos</div><div class="flm-val red">26</div><div class="flm-sub">← urgente</div></div>
+          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,730</div><div class="flm-sub">necesarios</div></div>
+        </div>
+        <div class="stages-row">
+          <div class="stage-chip on"><div class="sc-n">22</div><div class="sc-lbl">Screening</div></div>
+          <div class="stage-chip on"><div class="sc-n">5</div><div class="sc-lbl">Qual Test</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T1</div></div>
+          <div class="stage-chip on"><div class="sc-n">12</div><div class="sc-lbl">T2 ← foco</div></div>
+          <div class="stage-chip on"><div class="sc-n">2</div><div class="sc-lbl">T3</div></div>
+          <div class="stage-chip on"><div class="sc-n">1</div><div class="sc-lbl">TA Int ★</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
+        </div>
+        <div class="action-box">
+          <div class="action-box-title">Acciones prioritarias esta semana</div>
+          <div class="action-line">26 SLA vencidos — la mayor deuda de proceso en todos los pipelines. Revisión esta semana.</div>
+          <div class="action-line">12 candidatos en T2 son la mejor oportunidad. Coordinar con interviewers para destrabar.</div>
+          <div class="action-line">Candidato en TA Interview: si avanza puede estar en Offer en ~15 días.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AR IC6 -->
+    <div class="fl-card">
+      <div class="fl-head">
+        <div class="fl-head-text">
+          <h3>🇦🇷 Argentina · IC6 · Lead Software Engineer</h3>
+          <p>HM: Matias Bargas (×3 posiciones) · 101 días abiertos</p>
+        </div>
+        <span class="pill">🔴 Crítico</span>
+      </div>
+      <div class="fl-body">
+        <div class="fl-metrics">
+          <div><div class="flm-label">Posiciones</div><div class="flm-val red">3</div><div class="flm-sub">abiertas</div></div>
+          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">GAP</div><div class="flm-val red">3</div><div class="flm-sub">posiciones</div></div>
+          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,412</div><div class="flm-sub">necesarios</div></div>
+        </div>
+        <div class="stages-row">
+          <div class="stage-chip on"><div class="sc-n">16</div><div class="sc-lbl">Screening</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T1</div></div>
+          <div class="stage-chip on"><div class="sc-n">1</div><div class="sc-lbl">T2</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T3</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">TA Int</div></div>
+          <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
+        </div>
+        <div class="action-box">
+          <div class="action-box-title">Acciones prioritarias esta semana</div>
+          <div class="action-line">16 candidatos bloqueados en Screening — coordinar Arch Interview (T1) lo antes posible.</div>
+          <div class="action-line">Para 3 hires necesitas ~330 en Screening (PTR 110:1). Hoy tienes 16. Sourcing crítico.</div>
+          <div class="action-line">Sin hires registrados históricamente en este pipeline — PTR es proyección. Primer hire será clave.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ FUNNEL DETAIL ═══════════════════════════════ -->
+<div id="funnel" class="section">
+  <div class="section-title">Funnel Detail</div>
+  <p class="section-sub">PTR histórico por etapa · 25% buffer aplicado · Basado en candidatos completados en Greenhouse</p>
+
+  <div class="fd-tabs">
+    <button class="fd-tab active" onclick="showFd('co-ic5',this)">🇨🇴 IC5</button>
+    <button class="fd-tab" onclick="showFd('co-ic6',this)">🇨🇴 IC6</button>
+    <button class="fd-tab" onclick="showFd('ar-ic5',this)">🇦🇷 IC5</button>
+    <button class="fd-tab warn" onclick="showFd('ar-ic6',this)">🇦🇷 IC6 ⚠️</button>
+    <button class="fd-tab" onclick="showFd('mx-ic5',this)">🇲🇽 IC5</button>
+    <button class="fd-tab" onclick="showFd('mx-ic6',this)">🇲🇽 IC6</button>
+  </div>
+
+  <div id="co-ic5" class="fd-panel active">
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">62</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">78</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">62:1</div><div class="kpi-sub">78:1 con buffer</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Arch Interview (42%) · Debriefing (56%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr><td class="sn">Application Review</td><td class="ptr-ok">98%</td><td class="td-n">62</td><td class="td-buf">78</td></tr>
+        <tr><td class="sn">Screening</td><td class="ptr-ok">67%</td><td class="td-n">61</td><td class="td-buf">76</td></tr>
+        <tr><td class="sn">Qualification Test</td><td class="ptr-ok">86%</td><td class="td-n">41</td><td class="td-buf">51</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Arch Interview</td><td class="ptr-bad">42%</td><td class="td-n">35</td><td class="td-buf">44</td></tr>
+        <tr><td class="sn">Pair Programming</td><td class="ptr-ok">46%</td><td class="td-n">15</td><td class="td-buf">19</td></tr>
+        <tr><td class="sn">TA Interview</td><td class="ptr-ok">63%</td><td class="td-n">7</td><td class="td-buf">9</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">90%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Debriefing</td><td class="ptr-bad">56%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr><td class="sn">VET</td><td class="ptr-ok">80%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr><td class="sn">Allocation</td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr><td class="sn">Offer</td><td class="ptr-ok">75%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Qualification Test reemplaza el histórico Take Home Exercise (Tech Stage 1). PTR actual: 86%.</div>
+      <div>Tech Stage 4 omitido — sin actividad.</div>
+      <div>Mayor drop-off: Arch Interview (42%) y Debriefing (56%).</div>
+    </div>
+  </div>
+
+  <div id="co-ic6" class="fd-panel">
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">824</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,030</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">824:1</div><div class="kpi-sub">1030:1 con buffer</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (19%) · TA Interview (4%) · Debriefing (50%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">19%</td><td class="td-n">824</td><td class="td-buf">1,030</td></tr>
+        <tr><td class="sn">Screening</td><td class="ptr-ok">73%</td><td class="td-n">157</td><td class="td-buf">196</td></tr>
+        <tr><td class="sn">Arch Interview</td><td class="ptr-ok">58%</td><td class="td-n">115</td><td class="td-buf">144</td></tr>
+        <tr><td class="sn">Take Home Exercise</td><td class="ptr-ok">97%</td><td class="td-n">67</td><td class="td-buf">84</td></tr>
+        <tr><td class="sn">Pair Programming</td><td class="ptr-ok">76%</td><td class="td-n">65</td><td class="td-buf">81</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ TA Interview</td><td class="ptr-bad">4%</td><td class="td-n">49</td><td class="td-buf">61</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Debriefing</td><td class="ptr-bad">50%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr><td class="sn">VET</td><td class="ptr-ok">100%</td><td class="td-n">1</td><td class="td-buf">2</td></tr>
+        <tr><td class="sn">Allocation</td><td class="ptr-ok">100%</td><td class="td-n">1</td><td class="td-buf">1</td></tr>
+        <tr><td class="sn">Offer</td><td class="ptr-ok">100%</td><td class="td-n">1</td><td class="td-buf">1</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Sin Qualification Test para IC6. Arch Interview es el primer stage técnico.</div>
+      <div>Cuello crítico: TA Interview con solo 4% PTR — posible calibración a revisar con HMs.</div>
+    </div>
+  </div>
+
+  <div id="ar-ic5" class="fd-panel">
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">68</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">85</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">68:1</div><div class="kpi-sub">85:1 con buffer</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (47%) · Arch Interview (30%) · Offer (63%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">47%</td><td class="td-n">68</td><td class="td-buf">85</td></tr>
+        <tr><td class="sn">Screening</td><td class="ptr-ok">65%</td><td class="td-n">32</td><td class="td-buf">40</td></tr>
+        <tr><td class="sn">Qualification Test</td><td class="ptr-ok">91%</td><td class="td-n">21</td><td class="td-buf">26</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Arch Interview</td><td class="ptr-bad">30%</td><td class="td-n">19</td><td class="td-buf">24</td></tr>
+        <tr><td class="sn">Pair Programming</td><td class="ptr-ok">63%</td><td class="td-n">6</td><td class="td-buf">8</td></tr>
+        <tr><td class="sn">TA Interview</td><td class="ptr-ok">79%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">93%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">Debriefing</td><td class="ptr-ok">64%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">VET</td><td class="ptr-ok">89%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr><td class="sn">Allocation</td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Offer</td><td class="ptr-bad">63%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Qualification Test reemplaza el histórico Take Home Exercise.</div>
+      <div>Mayor drop-off: Arch Interview (30%) y aceptación de Offer (63%).</div>
+    </div>
+  </div>
+
+  <div id="ar-ic6" class="fd-panel">
+    <div class="proj-banner">⚠️ <strong>Solo proyección — sin hires registrados.</strong> Etapas tras Debriefing usan CO IC6 como referencia. Tratar cifras como estimados.</div>
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">276</div><div class="kpi-sub">candidatos por hire (est.)</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">345</div><div class="kpi-sub">candidatos por hire (est.)</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio estimado</div><div class="kpi-value">~276:1</div><div class="kpi-sub">proyección</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Arch Interview (15%) · Pair Programming (38%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">40%</td><td class="td-n">276</td><td class="td-buf">345</td></tr>
+        <tr><td class="sn">Screening</td><td class="ptr-ok">60%</td><td class="td-n">110</td><td class="td-buf">138</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Arch Interview</td><td class="ptr-bad">15%</td><td class="td-n">66</td><td class="td-buf">83</td></tr>
+        <tr><td class="sn">Take Home Exercise</td><td class="ptr-ok">80%</td><td class="td-n">10</td><td class="td-buf">13</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Pair Programming</td><td class="ptr-bad">38%</td><td class="td-n">8</td><td class="td-buf">10</td></tr>
+        <tr><td class="sn">TA Interview</td><td class="ptr-ok">100%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">100%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">Debriefing <span class="ref-tag">(ref: CO IC6)</span></td><td class="ptr-ok">50%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">VET <span class="ref-tag">(ref: CO IC6)</span></td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr><td class="sn">Offer <span class="ref-tag">(ref: CO IC6)</span></td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">2</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Sin hires registrados. Todos los números son proyecciones.</div>
+      <div>Etapas desde Debriefing usan CO IC6 como benchmark de referencia.</div>
+      <div>Arch Interview al 15% es el cuello más crítico si los datos se sostienen.</div>
+    </div>
+  </div>
+
+  <div id="mx-ic5" class="fd-panel">
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">191</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">239</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">191:1</div><div class="kpi-sub">239:1 con buffer</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Screening (38%) · Qual Test/Tech S1 (35%) · TA Interview (38%) · Allocation (50%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr><td class="sn">Application Review</td><td class="ptr-ok">99%</td><td class="td-n">191</td><td class="td-buf">239</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Screening</td><td class="ptr-bad">38%</td><td class="td-n">189</td><td class="td-buf">236</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Qual Test / Tech S1</td><td class="ptr-bad">35%</td><td class="td-n">72</td><td class="td-buf">90</td></tr>
+        <tr><td class="sn">Arch Interview</td><td class="ptr-ok">60%</td><td class="td-n">25</td><td class="td-buf">31</td></tr>
+        <tr><td class="sn">Pair Programming</td><td class="ptr-ok">53%</td><td class="td-n">15</td><td class="td-buf">19</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ TA Interview</td><td class="ptr-bad">38%</td><td class="td-n">8</td><td class="td-buf">10</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">100%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">Debriefing</td><td class="ptr-ok">67%</td><td class="td-n">3</td><td class="td-buf">4</td></tr>
+        <tr><td class="sn">VET</td><td class="ptr-ok">100%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Allocation</td><td class="ptr-bad">50%</td><td class="td-n">2</td><td class="td-buf">3</td></tr>
+        <tr><td class="sn">Offer</td><td class="ptr-ok">100%</td><td class="td-n">1</td><td class="td-buf">1</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Qual Test (100% PTR) y Tech Stage 1 (35% PTR) son el mismo stage — PTR efectivo: 35%.</div>
+      <div>Múltiples cuellos consecutivos en etapas técnicas tempranas comprimen el funnel.</div>
+    </div>
+  </div>
+
+  <div id="mx-ic6" class="fd-panel">
+    <div class="kpi-row">
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">1,098</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,373</div><div class="kpi-sub">candidatos por hire</div></div>
+      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">1098:1</div><div class="kpi-sub">1373:1 con buffer</div></div>
+    </div>
+    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (8%) · Arch Interview (45%) · Debriefing (44%)</div>
+    <table>
+      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <tbody>
+        <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">8%</td><td class="td-n">1,098</td><td class="td-buf">1,373</td></tr>
+        <tr><td class="sn">Screening</td><td class="ptr-ok">73%</td><td class="td-n">91</td><td class="td-buf">114</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Arch Interview</td><td class="ptr-bad">45%</td><td class="td-n">66</td><td class="td-buf">83</td></tr>
+        <tr><td class="sn">Take Home Exercise</td><td class="ptr-ok">83%</td><td class="td-n">30</td><td class="td-buf">38</td></tr>
+        <tr><td class="sn">Pair Programming</td><td class="ptr-ok">76%</td><td class="td-n">25</td><td class="td-buf">31</td></tr>
+        <tr><td class="sn">TA Interview</td><td class="ptr-ok">47%</td><td class="td-n">19</td><td class="td-buf">24</td></tr>
+        <tr><td class="sn">HM Interview</td><td class="ptr-ok">100%</td><td class="td-n">9</td><td class="td-buf">11</td></tr>
+        <tr class="bn-row"><td class="sn bad">⚠️ Debriefing</td><td class="ptr-bad">44%</td><td class="td-n">9</td><td class="td-buf">11</td></tr>
+        <tr><td class="sn">VET</td><td class="ptr-ok">100%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr><td class="sn">Allocation</td><td class="ptr-ok">100%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr><td class="sn">Offer</td><td class="ptr-ok">75%</td><td class="td-n">4</td><td class="td-buf">5</td></tr>
+        <tr class="hire-row"><td class="sn hire">🏁 Hired</td><td>—</td><td class="td-n">1</td><td class="td-buf-hire">1</td></tr>
+      </tbody>
+    </table>
+    <div class="notes">
+      <div>Sin Qualification Test para IC6. Arch Interview es el primer stage técnico.</div>
+      <div>Application Review al 8% PTR es la constraint principal — el volumen de sourcing es crítico.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════ MANAGER REPORT ═══════════════════════════════ -->
+<div id="manager" class="section">
+  <div class="mgr-header">
+    <div class="mgr-title">Pipeline Report · Susana Mejía</div>
+    <div class="mgr-sub">IC Engineering Hiring · CO · MX · AR · Semana del 7 de abril, 2026</div>
+  </div>
+
+  <div class="mgr-grid">
+
+    <div class="ms">
+      <div class="ms-title">Salud del Pipeline</div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇨🇴 Colombia · IC5</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>4</span></div>
+          <div class="hr-stat">Activos: <span>25</span></div>
+          <div class="hr-stat">Proy.: <span class="red">~0.1</span></div>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇲🇽 México · IC5</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>4</span></div>
+          <div class="hr-stat">Activos: <span>42</span></div>
+          <div class="hr-stat">Proy.: <span class="red">~0.4</span></div>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-gray"></div><div class="hr-name">🇦🇷 Argentina · IC5</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>0</span></div>
+          <div class="hr-stat">Activos: <span>7</span></div>
+          <div class="hr-stat">Proy.: <span>~0.2</span></div>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-gray"></div><div class="hr-name">🇨🇴 Colombia · IC6</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>0</span></div>
+          <div class="hr-stat">Activos: <span>10</span></div>
+          <div class="hr-stat">Proy.: <span>~0.1</span></div>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇲🇽 México · IC6</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>4</span></div>
+          <div class="hr-stat">Activos: <span>6</span></div>
+          <div class="hr-stat">Proy.: <span class="red">~0.1</span></div>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇦🇷 Argentina · IC6</div></div>
+        <div class="hr-right">
+          <div class="hr-stat">Abiertas: <span>3</span></div>
+          <div class="hr-stat">Activos: <span>17</span></div>
+          <div class="hr-stat">Proy.: <span class="red">~0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ms">
+      <div class="ms-title">Semana vs Semana</div>
+      <div class="snapshot-note">📸 Ejecuta <strong>Tomar snapshot semanal</strong> en el TA Command Center para activar esta sección. A partir de 2 snapshots verás el cambio semana a semana.</div>
+      <table class="wow-table">
+        <thead><tr><th>Pipeline</th><th>Sem ant.</th><th>Esta sem.</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>🇨🇴 IC5</td><td>—</td><td>25</td><td style="color:var(--gray)">·</td></tr>
+          <tr><td>🇲🇽 IC5</td><td>—</td><td>42</td><td style="color:var(--gray)">·</td></tr>
+          <tr><td>🇦🇷 IC5</td><td>—</td><td>7</td><td style="color:var(--gray)">·</td></tr>
+          <tr><td>🇨🇴 IC6</td><td>—</td><td>10</td><td style="color:var(--gray)">·</td></tr>
+          <tr><td>🇲🇽 IC6</td><td>—</td><td>6</td><td style="color:var(--gray)">·</td></tr>
+          <tr><td>🇦🇷 IC6</td><td>—</td><td>17</td><td style="color:var(--gray)">·</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="ms">
+      <div class="ms-title">Riesgos Principales</div>
+      <div class="risk-item">
+        <span class="risk-tag risk-high">Alto</span>
+        <div class="risk-text">MX IC5 — 26 candidatos con SLA vencido. La mayor deuda de proceso de todos los pipelines activos.</div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-tag risk-high">Alto</span>
+        <div class="risk-text">MX IC6 — Pipeline extremadamente delgado (6 activos para 4 posiciones abiertas hace 192–259 días).</div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-tag risk-high">Alto</span>
+        <div class="risk-text">Todas las posiciones activas tienen targets de Q3/Q4 2025 ya vencidos. Riesgo de escalation.</div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-tag risk-med">Medio</span>
+        <div class="risk-text">AR IC6 — 0 hires proyectados. Pipeline bloqueado en Screening. 3 posiciones abiertas sin avance.</div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-tag risk-med">Medio</span>
+        <div class="risk-text">CO IC6 — TA Interview con PTR 4% histórico. Calibración con HMs puede ser necesaria.</div>
+      </div>
+    </div>
+
+    <div class="ms">
+      <div class="ms-title">En Curso Esta Semana</div>
+      <div class="ai green"><strong style="color:var(--green)">Oportunidad cercana:</strong> Candidato MX IC6 en HM Stage — primer hire posible del pipeline en ~14 días si avanza</div>
+      <div class="ai">6 screenings programados hoy: IC5 CO/MX + IC6 CO/AR</div>
+      <div class="ai">Debriefing Eduardo Lomeli IC6 MX — decisión esta semana</div>
+      <div class="ai">Bi-weekly con Juan — alineación de pipeline IC5</div>
+      <div class="ai">TA IA Initiatives con Isabel — herramientas para escalar sourcing</div>
+      <div class="ai">Agenda next day 17:30 — inputs para weekly con Carol</div>
+    </div>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.navtab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function showFd(id, btn) {
+  document.querySelectorAll('.fd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.fd-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
