@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -164,9 +164,10 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 .hr-stat span { font-weight: 700; color: var(--nu-text); }
 .hr-stat span.red { color: var(--red); }
 .wow-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.wow-table th { text-align: left; font-size: 10px; color: var(--nu-muted); text-transform: uppercase; letter-spacing: 0.3px; padding: 0 0 8px; font-weight: 600; }
+.wow-table thead tr { background: var(--nu-light); }
+.wow-table th { text-align: left; font-size: 11px; color: var(--nu); text-transform: uppercase; letter-spacing: 0.4px; padding: 8px 6px; font-weight: 700; border-bottom: 2px solid var(--nu-border); }
 .wow-table th:not(:first-child) { text-align: center; }
-.wow-table td { padding: 7px 0; border-top: 1px solid var(--nu-border); }
+.wow-table td { padding: 8px 6px; border-top: 1px solid var(--nu-border); }
 .wow-table td:not(:first-child) { text-align: center; font-weight: 600; }
 .snapshot-note { background: var(--amber-light); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--amber); margin-bottom: 14px; border: 1px solid #FDE68A; }
 .risk-item { padding: 9px 0; border-bottom: 1px solid var(--nu-border); }
@@ -194,7 +195,7 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       <h1>TA Pipeline Intelligence</h1>
       <div class="header-sub">IC5 &amp; IC6 · Colombia · Argentina · México · Nubank Engineering</div>
     </div>
-    <div class="header-date">Datos al<br><strong>06 abr 2026</strong></div>
+    <div class="header-date">Data as of<br><strong>Apr 6, 2026</strong></div>
   </div>
 </div>
 
@@ -212,17 +213,17 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 <!-- ═══════════════════════════════ OVERVIEW ═══════════════════════════════ -->
 <div id="overview" class="section active">
   <div class="section-title">Pipeline Overview</div>
-  <p class="section-sub">Estado general · datos actualizados 06 abr 2026 · SLA, candidatos activos y proyección de hires</p>
+  <p class="section-sub">Current status · data as of Apr 6, 2026 · SLA, active candidates and hire projection</p>
   <div class="overview-grid">
 
     <div class="hc red">
-      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC5</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC5</div><span class="badge badge-red">🔴 Critical</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">25</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val red">4</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">25</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Projection</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
       </div>
-      <div class="hc-note">⚠️ 12 SLA vencidos · Sourcing urgente</div>
+      <div class="hc-note">⚠️ 12 overdue SLAs · Urgent sourcing needed</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:36px"></div><div class="pb-n">16</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar on" style="height:12px"></div><div class="pb-n">4</div><div class="pb-lbl">Qual</div></div>
@@ -235,13 +236,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="hc red">
-      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC5</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC5</div><span class="badge badge-red">🔴 Critical</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">42</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.4</div><div class="hcs-sub">GAP: 3.6</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val red">4</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">42</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Projection</div><div class="hcs-val red">~0.4</div><div class="hcs-sub">GAP: 3.6</div></div>
       </div>
-      <div class="hc-note">⚠️ 26 SLA vencidos — mayor deuda de todos</div>
+      <div class="hc-note">⚠️ 26 overdue SLAs — highest backlog across all pipelines</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:44px"></div><div class="pb-n">22</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar on" style="height:12px"></div><div class="pb-n">5</div><div class="pb-lbl">Qual</div></div>
@@ -254,13 +255,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="hc gray">
-      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC5</div><span class="badge badge-gray">Sin posiciones</span></div>
+      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC5</div><span class="badge badge-gray">No Open Roles</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val">0</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">7</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">SLA vencido</div><div class="hcs-val red">4</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val">0</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">7</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Overdue SLA</div><div class="hcs-val red">4</div><div class="hcs-sub">candidates</div></div>
       </div>
-      <div class="hc-note gray">Pipeline de mantenimiento · 4 SLA vencidos a resolver</div>
+      <div class="hc-note gray">Maintenance pipeline · 4 overdue SLAs to resolve</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:8px;opacity:0.4"></div><div class="pb-n">3</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">2</div><div class="pb-lbl">Qual</div></div>
@@ -272,13 +273,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="hc gray">
-      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC6</div><span class="badge badge-gray">Sin posiciones</span></div>
+      <div class="hc-top"><div class="hc-name">🇨🇴 Colombia · IC6</div><span class="badge badge-gray">No Open Roles</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val">0</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">10</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">SLA vencido</div><div class="hcs-val red">8</div><div class="hcs-sub">candidatos</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val">0</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">10</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Overdue SLA</div><div class="hcs-val red">8</div><div class="hcs-sub">candidates</div></div>
       </div>
-      <div class="hc-note gray">Pipeline activo · Resolver 8 SLA vencidos</div>
+      <div class="hc-note gray">Active pipeline · Resolve 8 overdue SLAs</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:12px;opacity:0.4"></div><div class="pb-n">5</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar on" style="height:6px;opacity:0.4"></div><div class="pb-n">2</div><div class="pb-lbl">T1</div></div>
@@ -290,13 +291,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="hc red">
-      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC6</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-top"><div class="hc-name">🇲🇽 México · IC6</div><span class="badge badge-red">🔴 Critical</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">4</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">6</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val red">4</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">6</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Projection</div><div class="hcs-val red">~0.1</div><div class="hcs-sub">GAP: 3.9</div></div>
       </div>
-      <div class="hc-note">🌟 1 candidato en HM Stage — empujar ahora</div>
+      <div class="hc-note">🌟 1 candidate in HM Stage — push now</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:14px"></div><div class="pb-n">5</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
@@ -309,13 +310,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="hc red">
-      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC6</div><span class="badge badge-red">🔴 Crítico</span></div>
+      <div class="hc-top"><div class="hc-name">🇦🇷 Argentina · IC6</div><span class="badge badge-red">🔴 Critical</span></div>
       <div class="hc-stats">
-        <div><div class="hcs-label">Posiciones</div><div class="hcs-val red">3</div><div class="hcs-sub">abiertas</div></div>
-        <div><div class="hcs-label">Activos Scr+</div><div class="hcs-val nu">17</div><div class="hcs-sub">candidatos</div></div>
-        <div><div class="hcs-label">Proyección</div><div class="hcs-val red">~0</div><div class="hcs-sub">GAP: 3</div></div>
+        <div><div class="hcs-label">Open Roles</div><div class="hcs-val red">3</div><div class="hcs-sub">open</div></div>
+        <div><div class="hcs-label">Active (Scr+)</div><div class="hcs-val nu">17</div><div class="hcs-sub">candidates</div></div>
+        <div><div class="hcs-label">Projection</div><div class="hcs-val red">~0</div><div class="hcs-sub">GAP: 3</div></div>
       </div>
-      <div class="hc-note">⚠️ 16 acumulados en Screening · Desatascar</div>
+      <div class="hc-note">⚠️ 16 stacked in Screening · Unblock urgently</div>
       <div class="pipeline-bar">
         <div class="pb-col"><div class="pb-bar on" style="height:40px"></div><div class="pb-n">16</div><div class="pb-lbl">Scr</div></div>
         <div class="pb-col"><div class="pb-bar" style="height:4px"></div><div class="pb-n">—</div><div class="pb-lbl">T1</div></div>
@@ -332,25 +333,25 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 <!-- ═══════════════════════════════ FORWARD LOOK ═══════════════════════════════ -->
 <div id="forward" class="section">
   <div class="section-title">Forward Look</div>
-  <p class="section-sub">TTH objetivo: 60 días · ¿Cuánto pipeline necesito hoy para cerrar mis posiciones a tiempo?</p>
+  <p class="section-sub">Target TTH: 60 days · How much pipeline do I need today to close positions on time?</p>
 
   <div class="fl-list">
 
-    <!-- MX IC6 — MEJOR OPORTUNIDAD CERCANA -->
+    <!-- MX IC6 — CLOSEST TO HIRE -->
     <div class="fl-card">
       <div class="fl-head">
         <div class="fl-head-text">
           <h3>🇲🇽 México · IC6 · Lead Software Engineer</h3>
-          <p>HMs: Fabio Moreira · Oscar Vargas · Justin Gehtland · Laiz Lipiainen · Posiciones: 192–259 días abiertas</p>
+          <p>HMs: Fabio Moreira · Oscar Vargas · Justin Gehtland · Laiz Lipiainen · Roles: 192–259 days open</p>
         </div>
-        <span class="pill">🔴 Crítico</span>
+        <span class="pill">🔴 Critical</span>
       </div>
       <div class="fl-body">
         <div class="fl-metrics">
-          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
-          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
-          <div><div class="flm-label">GAP</div><div class="flm-val red">3.9</div><div class="flm-sub">posiciones</div></div>
-          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,846</div><div class="flm-sub">necesarios</div></div>
+          <div><div class="flm-label">Open Roles</div><div class="flm-val red">4</div><div class="flm-sub">open</div></div>
+          <div><div class="flm-label">Projection</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">GAP</div><div class="flm-val red">3.9</div><div class="flm-sub">roles</div></div>
+          <div><div class="flm-label">Outreach/week</div><div class="flm-val nu">1,846</div><div class="flm-sub">needed</div></div>
         </div>
         <div class="stages-row">
           <div class="stage-chip on"><div class="sc-n">5</div><div class="sc-lbl">Screening</div></div>
@@ -362,10 +363,10 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
           <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
         </div>
         <div class="action-box">
-          <div class="action-box-title">Acciones prioritarias esta semana</div>
-          <div class="action-line">El candidato en HM es tu única oportunidad real de hire en 60 días — prioridad absoluta</div>
-          <div class="action-line">Para 4 hires necesitas ~364 en Screening (PTR 91:1). Hoy tienes 5. Sourcing masivo urgente.</div>
-          <div class="action-line">Posición más vieja: 259 días. Targets de Q3 2025 ya vencidos — escalar a manager.</div>
+          <div class="action-box-title">Priority Actions This Week</div>
+          <div class="action-line">The HM Stage candidate is your only realistic hire in 60 days — top priority, push immediately.</div>
+          <div class="action-line">For 4 hires you need ~364 in Screening (PTR 91:1). You have 5 today. Urgent mass sourcing needed.</div>
+          <div class="action-line">Oldest role: 259 days open. Q3 2025 targets already missed — escalate to manager.</div>
         </div>
       </div>
     </div>
@@ -375,16 +376,16 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       <div class="fl-head">
         <div class="fl-head-text">
           <h3>🇨🇴 Colombia · IC5 · Senior Software Engineer</h3>
-          <p>HMs: Dante Cassanego · Renato Peres · Bruno Junqueira (×2) · 101–226 días abiertos</p>
+          <p>HMs: Dante Cassanego · Renato Peres · Bruno Junqueira (×2) · 101–226 days open</p>
         </div>
-        <span class="pill">🔴 Crítico</span>
+        <span class="pill">🔴 Critical</span>
       </div>
       <div class="fl-body">
         <div class="fl-metrics">
-          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
-          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
-          <div><div class="flm-label">SLA vencidos</div><div class="flm-val red">12</div><div class="flm-sub">candidatos</div></div>
-          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,845</div><div class="flm-sub">necesarios</div></div>
+          <div><div class="flm-label">Open Roles</div><div class="flm-val red">4</div><div class="flm-sub">open</div></div>
+          <div><div class="flm-label">Projection</div><div class="flm-val red">~0.1</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">Overdue SLAs</div><div class="flm-val red">12</div><div class="flm-sub">candidates</div></div>
+          <div><div class="flm-label">Outreach/week</div><div class="flm-val nu">1,845</div><div class="flm-sub">needed</div></div>
         </div>
         <div class="stages-row">
           <div class="stage-chip on"><div class="sc-n">16</div><div class="sc-lbl">Screening</div></div>
@@ -396,10 +397,10 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
           <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
         </div>
         <div class="action-box">
-          <div class="action-box-title">Acciones prioritarias esta semana</div>
-          <div class="action-line">Candidato en T3: si pasa TA → HM → Debrief puede estar en Offer en ~25 días. Seguimiento cercano.</div>
-          <div class="action-line">Resolver 12 SLA vencidos — están bloqueando el flujo del pipeline.</div>
-          <div class="action-line">Para 4 hires: necesitas ~244 en Screening (PTR 61:1). Hoy tienes 16. GAP: 228.</div>
+          <div class="action-box-title">Priority Actions This Week</div>
+          <div class="action-line">Candidate in T3: if they pass TA → HM → Debrief, they could be at Offer in ~25 days. Monitor closely.</div>
+          <div class="action-line">Resolve 12 overdue SLAs — they are blocking pipeline flow.</div>
+          <div class="action-line">For 4 hires: you need ~244 in Screening (PTR 61:1). You have 16 today. GAP: 228.</div>
         </div>
       </div>
     </div>
@@ -409,31 +410,31 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       <div class="fl-head">
         <div class="fl-head-text">
           <h3>🇲🇽 México · IC5 · Senior Software Engineer</h3>
-          <p>HMs: Ulises Figueroa (×3) · Leonardo Marinho · 101–224 días abiertos</p>
+          <p>HMs: Ulises Figueroa (×3) · Leonardo Marinho · 101–224 days open</p>
         </div>
-        <span class="pill">🔴 Crítico</span>
+        <span class="pill">🔴 Critical</span>
       </div>
       <div class="fl-body">
         <div class="fl-metrics">
-          <div><div class="flm-label">Posiciones</div><div class="flm-val red">4</div><div class="flm-sub">abiertas</div></div>
-          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0.4</div><div class="flm-sub">hires</div></div>
-          <div><div class="flm-label">SLA vencidos</div><div class="flm-val red">26</div><div class="flm-sub">← urgente</div></div>
-          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,730</div><div class="flm-sub">necesarios</div></div>
+          <div><div class="flm-label">Open Roles</div><div class="flm-val red">4</div><div class="flm-sub">open</div></div>
+          <div><div class="flm-label">Projection</div><div class="flm-val red">~0.4</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">Overdue SLAs</div><div class="flm-val red">26</div><div class="flm-sub">← urgent</div></div>
+          <div><div class="flm-label">Outreach/week</div><div class="flm-val nu">1,730</div><div class="flm-sub">needed</div></div>
         </div>
         <div class="stages-row">
           <div class="stage-chip on"><div class="sc-n">22</div><div class="sc-lbl">Screening</div></div>
           <div class="stage-chip on"><div class="sc-n">5</div><div class="sc-lbl">Qual Test</div></div>
           <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">T1</div></div>
-          <div class="stage-chip on"><div class="sc-n">12</div><div class="sc-lbl">T2 ← foco</div></div>
+          <div class="stage-chip on"><div class="sc-n">12</div><div class="sc-lbl">T2 ← focus</div></div>
           <div class="stage-chip on"><div class="sc-n">2</div><div class="sc-lbl">T3</div></div>
           <div class="stage-chip on"><div class="sc-n">1</div><div class="sc-lbl">TA Int ★</div></div>
           <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
         </div>
         <div class="action-box">
-          <div class="action-box-title">Acciones prioritarias esta semana</div>
-          <div class="action-line">26 SLA vencidos — la mayor deuda de proceso en todos los pipelines. Revisión esta semana.</div>
-          <div class="action-line">12 candidatos en T2 son la mejor oportunidad. Coordinar con interviewers para destrabar.</div>
-          <div class="action-line">Candidato en TA Interview: si avanza puede estar en Offer en ~15 días.</div>
+          <div class="action-box-title">Priority Actions This Week</div>
+          <div class="action-line">26 overdue SLAs — the largest process backlog across all pipelines. Review this week.</div>
+          <div class="action-line">12 candidates in T2 are the best opportunity. Coordinate with interviewers to unblock.</div>
+          <div class="action-line">Candidate in TA Interview: if they advance they could be at Offer in ~15 days.</div>
         </div>
       </div>
     </div>
@@ -443,16 +444,16 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       <div class="fl-head">
         <div class="fl-head-text">
           <h3>🇦🇷 Argentina · IC6 · Lead Software Engineer</h3>
-          <p>HM: Matias Bargas (×3 posiciones) · 101 días abiertos</p>
+          <p>HM: Matias Bargas (×3 roles) · 101 days open</p>
         </div>
-        <span class="pill">🔴 Crítico</span>
+        <span class="pill">🔴 Critical</span>
       </div>
       <div class="fl-body">
         <div class="fl-metrics">
-          <div><div class="flm-label">Posiciones</div><div class="flm-val red">3</div><div class="flm-sub">abiertas</div></div>
-          <div><div class="flm-label">Proyección</div><div class="flm-val red">~0</div><div class="flm-sub">hires</div></div>
-          <div><div class="flm-label">GAP</div><div class="flm-val red">3</div><div class="flm-sub">posiciones</div></div>
-          <div><div class="flm-label">Reach outs/sem</div><div class="flm-val nu">1,412</div><div class="flm-sub">necesarios</div></div>
+          <div><div class="flm-label">Open Roles</div><div class="flm-val red">3</div><div class="flm-sub">open</div></div>
+          <div><div class="flm-label">Projection</div><div class="flm-val red">~0</div><div class="flm-sub">hires</div></div>
+          <div><div class="flm-label">GAP</div><div class="flm-val red">3</div><div class="flm-sub">roles</div></div>
+          <div><div class="flm-label">Outreach/week</div><div class="flm-val nu">1,412</div><div class="flm-sub">needed</div></div>
         </div>
         <div class="stages-row">
           <div class="stage-chip on"><div class="sc-n">16</div><div class="sc-lbl">Screening</div></div>
@@ -463,10 +464,10 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
           <div class="stage-chip"><div class="sc-n">—</div><div class="sc-lbl">Offer</div></div>
         </div>
         <div class="action-box">
-          <div class="action-box-title">Acciones prioritarias esta semana</div>
-          <div class="action-line">16 candidatos bloqueados en Screening — coordinar Arch Interview (T1) lo antes posible.</div>
-          <div class="action-line">Para 3 hires necesitas ~330 en Screening (PTR 110:1). Hoy tienes 16. Sourcing crítico.</div>
-          <div class="action-line">Sin hires registrados históricamente en este pipeline — PTR es proyección. Primer hire será clave.</div>
+          <div class="action-box-title">Priority Actions This Week</div>
+          <div class="action-line">16 candidates stalled in Screening — coordinate Arch Interview (T1) ASAP.</div>
+          <div class="action-line">For 3 hires you need ~330 in Screening (PTR 110:1). You have 16 today. Critical sourcing gap.</div>
+          <div class="action-line">No historical hires in this pipeline — PTR is a projection. First hire will be key to calibrate.</div>
         </div>
       </div>
     </div>
@@ -477,7 +478,7 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 <!-- ═══════════════════════════════ FUNNEL DETAIL ═══════════════════════════════ -->
 <div id="funnel" class="section">
   <div class="section-title">Funnel Detail</div>
-  <p class="section-sub">PTR histórico por etapa · 25% buffer aplicado · Basado en candidatos completados en Greenhouse</p>
+  <p class="section-sub">Historical PTR by stage · 25% buffer applied · Based on completed candidates in Greenhouse</p>
 
   <div class="fd-tabs">
     <button class="fd-tab active" onclick="showFd('co-ic5',this)">🇨🇴 IC5</button>
@@ -490,13 +491,13 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 
   <div id="co-ic5" class="fd-panel active">
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">62</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">78</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">62:1</div><div class="kpi-sub">78:1 con buffer</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">62</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">78</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi"><div class="kpi-label">Candidate:Hire Ratio</div><div class="kpi-value">62:1</div><div class="kpi-sub">78:1 with buffer</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Arch Interview (42%) · Debriefing (56%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Arch Interview (42%) · Debriefing (56%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr><td class="sn">Application Review</td><td class="ptr-ok">98%</td><td class="td-n">62</td><td class="td-buf">78</td></tr>
         <tr><td class="sn">Screening</td><td class="ptr-ok">67%</td><td class="td-n">61</td><td class="td-buf">76</td></tr>
@@ -513,21 +514,21 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Qualification Test reemplaza el histórico Take Home Exercise (Tech Stage 1). PTR actual: 86%.</div>
-      <div>Tech Stage 4 omitido — sin actividad.</div>
-      <div>Mayor drop-off: Arch Interview (42%) y Debriefing (56%).</div>
+      <div>Qualification Test replaces the historical Take Home Exercise (Tech Stage 1). Current PTR: 86%.</div>
+      <div>Tech Stage 4 omitted — no activity.</div>
+      <div>Biggest drop-off: Arch Interview (42%) and Debriefing (56%).</div>
     </div>
   </div>
 
   <div id="co-ic6" class="fd-panel">
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">824</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,030</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">824:1</div><div class="kpi-sub">1030:1 con buffer</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">824</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,030</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi"><div class="kpi-label">Candidate:Hire Ratio</div><div class="kpi-value">824:1</div><div class="kpi-sub">1030:1 with buffer</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (19%) · TA Interview (4%) · Debriefing (50%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Application Review (19%) · TA Interview (4%) · Debriefing (50%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">19%</td><td class="td-n">824</td><td class="td-buf">1,030</td></tr>
         <tr><td class="sn">Screening</td><td class="ptr-ok">73%</td><td class="td-n">157</td><td class="td-buf">196</td></tr>
@@ -544,20 +545,20 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Sin Qualification Test para IC6. Arch Interview es el primer stage técnico.</div>
-      <div>Cuello crítico: TA Interview con solo 4% PTR — posible calibración a revisar con HMs.</div>
+      <div>No Qualification Test for IC6. Arch Interview is the first technical stage.</div>
+      <div>Critical bottleneck: TA Interview with only 4% PTR — possible calibration issue to review with HMs.</div>
     </div>
   </div>
 
   <div id="ar-ic5" class="fd-panel">
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">68</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">85</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">68:1</div><div class="kpi-sub">85:1 con buffer</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">68</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">85</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi"><div class="kpi-label">Candidate:Hire Ratio</div><div class="kpi-value">68:1</div><div class="kpi-sub">85:1 with buffer</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (47%) · Arch Interview (30%) · Offer (63%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Application Review (47%) · Arch Interview (30%) · Offer (63%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">47%</td><td class="td-n">68</td><td class="td-buf">85</td></tr>
         <tr><td class="sn">Screening</td><td class="ptr-ok">65%</td><td class="td-n">32</td><td class="td-buf">40</td></tr>
@@ -574,21 +575,21 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Qualification Test reemplaza el histórico Take Home Exercise.</div>
-      <div>Mayor drop-off: Arch Interview (30%) y aceptación de Offer (63%).</div>
+      <div>Qualification Test replaces the historical Take Home Exercise.</div>
+      <div>Biggest drop-off: Arch Interview (30%) and Offer acceptance (63%).</div>
     </div>
   </div>
 
   <div id="ar-ic6" class="fd-panel">
-    <div class="proj-banner">⚠️ <strong>Solo proyección — sin hires registrados.</strong> Etapas tras Debriefing usan CO IC6 como referencia. Tratar cifras como estimados.</div>
+    <div class="proj-banner">⚠️ <strong>Projection only — no recorded hires.</strong> Stages after Debriefing use CO IC6 as reference. Treat numbers as estimates.</div>
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">276</div><div class="kpi-sub">candidatos por hire (est.)</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">345</div><div class="kpi-sub">candidatos por hire (est.)</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio estimado</div><div class="kpi-value">~276:1</div><div class="kpi-sub">proyección</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">276</div><div class="kpi-sub">candidates per hire (est.)</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">345</div><div class="kpi-sub">candidates per hire (est.)</div></div>
+      <div class="kpi"><div class="kpi-label">Estimated Ratio</div><div class="kpi-value">~276:1</div><div class="kpi-sub">projection</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Arch Interview (15%) · Pair Programming (38%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Arch Interview (15%) · Pair Programming (38%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">40%</td><td class="td-n">276</td><td class="td-buf">345</td></tr>
         <tr><td class="sn">Screening</td><td class="ptr-ok">60%</td><td class="td-n">110</td><td class="td-buf">138</td></tr>
@@ -604,21 +605,21 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Sin hires registrados. Todos los números son proyecciones.</div>
-      <div>Etapas desde Debriefing usan CO IC6 como benchmark de referencia.</div>
-      <div>Arch Interview al 15% es el cuello más crítico si los datos se sostienen.</div>
+      <div>No recorded hires. All numbers are projections.</div>
+      <div>Stages from Debriefing onward use CO IC6 as reference benchmark.</div>
+      <div>Arch Interview at 15% is the most critical bottleneck if the data holds.</div>
     </div>
   </div>
 
   <div id="mx-ic5" class="fd-panel">
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">191</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">239</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">191:1</div><div class="kpi-sub">239:1 con buffer</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">191</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">239</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi"><div class="kpi-label">Candidate:Hire Ratio</div><div class="kpi-value">191:1</div><div class="kpi-sub">239:1 with buffer</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Screening (38%) · Qual Test/Tech S1 (35%) · TA Interview (38%) · Allocation (50%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Screening (38%) · Qual Test/Tech S1 (35%) · TA Interview (38%) · Allocation (50%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr><td class="sn">Application Review</td><td class="ptr-ok">99%</td><td class="td-n">191</td><td class="td-buf">239</td></tr>
         <tr class="bn-row"><td class="sn bad">⚠️ Screening</td><td class="ptr-bad">38%</td><td class="td-n">189</td><td class="td-buf">236</td></tr>
@@ -635,20 +636,20 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Qual Test (100% PTR) y Tech Stage 1 (35% PTR) son el mismo stage — PTR efectivo: 35%.</div>
-      <div>Múltiples cuellos consecutivos en etapas técnicas tempranas comprimen el funnel.</div>
+      <div>Qual Test (100% PTR) and Tech Stage 1 (35% PTR) are the same stage — effective PTR: 35%.</div>
+      <div>Multiple consecutive bottlenecks in early technical stages compress the funnel significantly.</div>
     </div>
   </div>
 
   <div id="mx-ic6" class="fd-panel">
     <div class="kpi-row">
-      <div class="kpi primary"><div class="kpi-label">Top of Funnel (sin buffer)</div><div class="kpi-value">1,098</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,373</div><div class="kpi-sub">candidatos por hire</div></div>
-      <div class="kpi"><div class="kpi-label">Ratio candidato:hire</div><div class="kpi-value">1098:1</div><div class="kpi-sub">1373:1 con buffer</div></div>
+      <div class="kpi primary"><div class="kpi-label">Top of Funnel (no buffer)</div><div class="kpi-value">1,098</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi accent"><div class="kpi-label">Top of Funnel (+25% buffer)</div><div class="kpi-value">1,373</div><div class="kpi-sub">candidates per hire</div></div>
+      <div class="kpi"><div class="kpi-label">Candidate:Hire Ratio</div><div class="kpi-value">1098:1</div><div class="kpi-sub">1373:1 with buffer</div></div>
     </div>
-    <div class="bn-bar">🚨 <strong>Cuellos de botella:</strong> Application Review (8%) · Arch Interview (45%) · Debriefing (44%)</div>
+    <div class="bn-bar">🚨 <strong>Bottlenecks:</strong> Application Review (8%) · Arch Interview (45%) · Debriefing (44%)</div>
     <table>
-      <thead><tr><th>Etapa</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
+      <thead><tr><th>Stage</th><th>PTR</th><th>Cands. / 1 Hire</th><th>+25% Buffer</th></tr></thead>
       <tbody>
         <tr class="bn-row"><td class="sn bad">⚠️ Application Review</td><td class="ptr-bad">8%</td><td class="td-n">1,098</td><td class="td-buf">1,373</td></tr>
         <tr><td class="sn">Screening</td><td class="ptr-ok">73%</td><td class="td-n">91</td><td class="td-buf">114</td></tr>
@@ -665,8 +666,8 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
       </tbody>
     </table>
     <div class="notes">
-      <div>Sin Qualification Test para IC6. Arch Interview es el primer stage técnico.</div>
-      <div>Application Review al 8% PTR es la constraint principal — el volumen de sourcing es crítico.</div>
+      <div>No Qualification Test for IC6. Arch Interview is the first technical stage.</div>
+      <div>Application Review at 8% PTR is the main constraint — sourcing volume is critical.</div>
     </div>
   </div>
 
@@ -676,68 +677,68 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
 <div id="manager" class="section">
   <div class="mgr-header">
     <div class="mgr-title">Pipeline Report · Susana Mejía</div>
-    <div class="mgr-sub">IC Engineering Hiring · CO · MX · AR · Semana del 7 de abril, 2026</div>
+    <div class="mgr-sub">IC Engineering Hiring · CO · MX · AR · Week of April 7, 2026</div>
   </div>
 
   <div class="mgr-grid">
 
     <div class="ms">
-      <div class="ms-title">Salud del Pipeline</div>
+      <div class="ms-title">Pipeline Health</div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇨🇴 Colombia · IC5</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>4</span></div>
-          <div class="hr-stat">Activos: <span>25</span></div>
-          <div class="hr-stat">Proy.: <span class="red">~0.1</span></div>
+          <div class="hr-stat">Open: <span>4</span></div>
+          <div class="hr-stat">Active: <span>25</span></div>
+          <div class="hr-stat">Proj.: <span class="red">~0.1</span></div>
         </div>
       </div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇲🇽 México · IC5</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>4</span></div>
-          <div class="hr-stat">Activos: <span>42</span></div>
-          <div class="hr-stat">Proy.: <span class="red">~0.4</span></div>
+          <div class="hr-stat">Open: <span>4</span></div>
+          <div class="hr-stat">Active: <span>42</span></div>
+          <div class="hr-stat">Proj.: <span class="red">~0.4</span></div>
         </div>
       </div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-gray"></div><div class="hr-name">🇦🇷 Argentina · IC5</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>0</span></div>
-          <div class="hr-stat">Activos: <span>7</span></div>
-          <div class="hr-stat">Proy.: <span>~0.2</span></div>
+          <div class="hr-stat">Open: <span>0</span></div>
+          <div class="hr-stat">Active: <span>7</span></div>
+          <div class="hr-stat">Proj.: <span>~0.2</span></div>
         </div>
       </div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-gray"></div><div class="hr-name">🇨🇴 Colombia · IC6</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>0</span></div>
-          <div class="hr-stat">Activos: <span>10</span></div>
-          <div class="hr-stat">Proy.: <span>~0.1</span></div>
+          <div class="hr-stat">Open: <span>0</span></div>
+          <div class="hr-stat">Active: <span>10</span></div>
+          <div class="hr-stat">Proj.: <span>~0.1</span></div>
         </div>
       </div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇲🇽 México · IC6</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>4</span></div>
-          <div class="hr-stat">Activos: <span>6</span></div>
-          <div class="hr-stat">Proy.: <span class="red">~0.1</span></div>
+          <div class="hr-stat">Open: <span>4</span></div>
+          <div class="hr-stat">Active: <span>6</span></div>
+          <div class="hr-stat">Proj.: <span class="red">~0.1</span></div>
         </div>
       </div>
       <div class="hr">
         <div class="hr-left"><div class="dot dot-red"></div><div class="hr-name">🇦🇷 Argentina · IC6</div></div>
         <div class="hr-right">
-          <div class="hr-stat">Abiertas: <span>3</span></div>
-          <div class="hr-stat">Activos: <span>17</span></div>
-          <div class="hr-stat">Proy.: <span class="red">~0</span></div>
+          <div class="hr-stat">Open: <span>3</span></div>
+          <div class="hr-stat">Active: <span>17</span></div>
+          <div class="hr-stat">Proj.: <span class="red">~0</span></div>
         </div>
       </div>
     </div>
 
     <div class="ms">
-      <div class="ms-title">Semana vs Semana</div>
-      <div class="snapshot-note">📸 Ejecuta <strong>Tomar snapshot semanal</strong> en el TA Command Center para activar esta sección. A partir de 2 snapshots verás el cambio semana a semana.</div>
+      <div class="ms-title">Week over Week</div>
+      <div class="snapshot-note">📸 Run <strong>Take Weekly Snapshot</strong> in TA Command Center to activate this section. Once you have 2 snapshots, week-over-week changes will appear here.</div>
       <table class="wow-table">
-        <thead><tr><th>Pipeline</th><th>Sem ant.</th><th>Esta sem.</th><th>Δ</th></tr></thead>
+        <thead><tr><th>Pipeline</th><th>Prev. Week</th><th>This Week</th><th>Δ</th></tr></thead>
         <tbody>
           <tr><td>🇨🇴 IC5</td><td>—</td><td>25</td><td style="color:var(--gray)">·</td></tr>
           <tr><td>🇲🇽 IC5</td><td>—</td><td>42</td><td style="color:var(--gray)">·</td></tr>
@@ -750,37 +751,37 @@ tr.hire-row td:first-child { color: var(--nu); font-weight: 700; }
     </div>
 
     <div class="ms">
-      <div class="ms-title">Riesgos Principales</div>
+      <div class="ms-title">Key Risks</div>
       <div class="risk-item">
-        <span class="risk-tag risk-high">Alto</span>
-        <div class="risk-text">MX IC5 — 26 candidatos con SLA vencido. La mayor deuda de proceso de todos los pipelines activos.</div>
+        <span class="risk-tag risk-high">High</span>
+        <div class="risk-text">MX IC5 — 26 candidates with overdue SLA. Highest process backlog across all active pipelines.</div>
       </div>
       <div class="risk-item">
-        <span class="risk-tag risk-high">Alto</span>
-        <div class="risk-text">MX IC6 — Pipeline extremadamente delgado (6 activos para 4 posiciones abiertas hace 192–259 días).</div>
+        <span class="risk-tag risk-high">High</span>
+        <div class="risk-text">MX IC6 — Extremely thin pipeline (6 active for 4 roles open 192–259 days).</div>
       </div>
       <div class="risk-item">
-        <span class="risk-tag risk-high">Alto</span>
-        <div class="risk-text">Todas las posiciones activas tienen targets de Q3/Q4 2025 ya vencidos. Riesgo de escalation.</div>
+        <span class="risk-tag risk-high">High</span>
+        <div class="risk-text">All active roles have Q3/Q4 2025 targets already missed. Escalation risk.</div>
       </div>
       <div class="risk-item">
-        <span class="risk-tag risk-med">Medio</span>
-        <div class="risk-text">AR IC6 — 0 hires proyectados. Pipeline bloqueado en Screening. 3 posiciones abiertas sin avance.</div>
+        <span class="risk-tag risk-med">Medium</span>
+        <div class="risk-text">AR IC6 — 0 projected hires. Pipeline stalled in Screening. 3 open roles with no progress.</div>
       </div>
       <div class="risk-item">
-        <span class="risk-tag risk-med">Medio</span>
-        <div class="risk-text">CO IC6 — TA Interview con PTR 4% histórico. Calibración con HMs puede ser necesaria.</div>
+        <span class="risk-tag risk-med">Medium</span>
+        <div class="risk-text">CO IC6 — TA Interview at 4% historical PTR. HM calibration may be needed.</div>
       </div>
     </div>
 
     <div class="ms">
-      <div class="ms-title">En Curso Esta Semana</div>
-      <div class="ai green"><strong style="color:var(--green)">Oportunidad cercana:</strong> Candidato MX IC6 en HM Stage — primer hire posible del pipeline en ~14 días si avanza</div>
-      <div class="ai">6 screenings programados hoy: IC5 CO/MX + IC6 CO/AR</div>
-      <div class="ai">Debriefing Eduardo Lomeli IC6 MX — decisión esta semana</div>
-      <div class="ai">Bi-weekly con Juan — alineación de pipeline IC5</div>
-      <div class="ai">TA IA Initiatives con Isabel — herramientas para escalar sourcing</div>
-      <div class="ai">Agenda next day 17:30 — inputs para weekly con Carol</div>
+      <div class="ms-title">In Progress This Week</div>
+      <div class="ai green"><strong style="color:var(--green)">Upcoming opportunity:</strong> MX IC6 candidate in HM Stage — first possible hire from this pipeline in ~14 days if they advance</div>
+      <div class="ai">6 screenings scheduled today: IC5 CO/MX + IC6 CO/AR</div>
+      <div class="ai">Debrief Eduardo Lomeli IC6 MX — decision this week</div>
+      <div class="ai">Bi-weekly with Juan — IC5 pipeline alignment</div>
+      <div class="ai">TA AI Initiatives with Isabel — tools to scale sourcing</div>
+      <div class="ai">Agenda next day 17:30 — inputs for weekly with Carol</div>
     </div>
 
   </div>
